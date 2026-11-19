@@ -1,5 +1,5 @@
 // =========================================================
-// 0. НАСТРОЙКИ SUPABASE (ВСТАВЬТЕ СВОИ ЗНАЧЕНИЯ СЮДА)
+// 0. НАСТРОЙКИ SUPABASE
 // =========================================================
 const SUPABASE_CONFIG = {
   URL: "https://ejchwvumsgyutbbtcuic.supabase.co",
@@ -20,7 +20,7 @@ const sb = isSupabaseConfigured
 // =========================================================
 const FACTORS = [
   {
-    id: "E", name: "Экстраверсия", en: "Extraversion", color: "#2563eb",
+    id: "E", name: "Экстраверсия", en: "Extraversion", color: "#1F6C9F",
     highManifest: "Инициативность, энергичность, быстрая адаптация в коллективе, готовность выступать и вести за собой группу, позитивный эмоциональный фон.",
     midManifest: "Гибкое переключение между командным взаимодействием и самостоятельной работой в спокойной обстановке.",
     lowManifest: "Сдержанность, глубина размышлений, умение сосредоточенно работать в тишине и индивидуальном формате без лишней суеты.",
@@ -31,7 +31,7 @@ const FACTORS = [
     matrixLow: "Предлагать парную работу, письменные ответы перед устными; предварительные сценарии выступлений; асинхронные формы участия (форумы, заметки); постепенно расширять социальные ситуации."
   },
   {
-    id: "A", name: "Доброжелательность", en: "Agreeableness", color: "#16a34a",
+    id: "A", name: "Доброжелательность", en: "Agreeableness", color: "#346538",
     highManifest: "Чуткость, стремление к гармонии, искренность, готовность помогать и сотрудничать, дипломатичность и доверие к людям.",
     midManifest: "Умение сочетать доброжелательное сотрудничество со способностью спокойно отстаивать собственные интересы.",
     lowManifest: "Независимость суждений, объективность, критическое мышление, готовность говорить правду без прикрас и отстаивать позицию.",
@@ -42,7 +42,7 @@ const FACTORS = [
     matrixLow: "Учить конструктивной конфронтации и аргументации; контракты поведения; ролевые игры по разрешению конфликтов; чёткие границы и правила «стоп-сигналов»."
   },
   {
-    id: "C", name: "Добросовестность", en: "Conscientiousness", color: "#0891b2",
+    id: "C", name: "Добросовестность", en: "Conscientiousness", color: "#2F3437",
     highManifest: "Организованность, планирование, самодисциплина, настойчивость, надёжность, обдуманность решений и стремление к высокому результату.",
     midManifest: "Разумный баланс между соблюдением планов и способностью действовать гибко при изменении обстоятельств.",
     lowManifest: "Спонтанность, гибкость, способность быстро реагировать в нестандартных игровых или ограниченных по времени ситуациях.",
@@ -53,7 +53,7 @@ const FACTORS = [
     matrixLow: "Разбивка на шаги (chunking), визуальные распорядки, тайм-менеджмент по Помодоро, ежедневные мини-цели, напоминания; обучение само-мониторингу и рефлексии."
   },
   {
-    id: "N", name: "Нейротизм (эмоц. реактивность)", en: "Neuroticism", color: "#d97706",
+    id: "N", name: "Нейротизм (эмоц. реактивность)", en: "Neuroticism", color: "#956400",
     highManifest: "Тонкая чувствительность к деталям обстановки и несправедливости, эмоциональная вовлечённость и осторожность в оценке угроз.",
     midManifest: "Умеренная эмоциональная чувствительность: обычные учебные трудности переживаются без длительной потери равновесия.",
     lowManifest: "Высокая эмоциональная стабильность, спокойствие под давлением, стрессоустойчивость и ясность ума в напряжённых ситуациях.",
@@ -64,7 +64,7 @@ const FACTORS = [
     matrixLow: "Если низкий (высокая стабильность): давать челлендж-задачи, развивать эмпатию к переживаниям других; учить отслеживать риски и последствия."
   },
   {
-    id: "O", name: "Открытость опыту", en: "Openness to Experience", color: "#7c3aed",
+    id: "O", name: "Открытость опыту", en: "Openness to Experience", color: "#5B3A9E",
     highManifest: "Любознательность, креативность, развитое воображение, интерес к идеям, искусству и нестандартным способам решения задач.",
     midManifest: "Способность сочетать практический взгляд на задачи с интересом к новым идеям и творческим подходам.",
     lowManifest: "Практичность, опора на проверенные факты и традиции, стабильность в действиях и чёткое следование понятным алгоритмам.",
@@ -150,7 +150,7 @@ const LIKERT_OPTIONS = [
 ];
 
 // =========================================================
-// 2. APP STATE & INIT
+// 2. APP STATE, TOAST & INIT
 // =========================================================
 let activeQuestions = [];
 let answers = {};
@@ -164,6 +164,9 @@ const SESSION_STORAGE_KEY = "bf_teacher_session_token";
 let teacherToken = localStorage.getItem(SESSION_STORAGE_KEY) || null;
 let dashData = null;
 let selectedClassId = null;
+let confirmDeleteStudentId = null;
+let toastTimer = null;
+
 let viewingContext = {
   isTeacherView: false,
   studentId: null,
@@ -171,6 +174,37 @@ let viewingContext = {
   studentName: "",
   className: ""
 };
+
+function showToast(tone, message) {
+  const region = document.getElementById("toast-region");
+  if (!region) return;
+  if (toastTimer) clearTimeout(toastTimer);
+
+  const toneClass =
+    tone === "success"
+      ? "alert-success"
+      : tone === "error"
+        ? "alert-danger"
+        : "alert-info";
+
+  region.innerHTML = `
+    <div class="toast-card ${toneClass}">
+      <span style="flex:1;">${escapeHtml(message)}</span>
+      <button type="button" class="toast-close" aria-label="Закрыть уведомление" onclick="dismissToast()">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  `;
+
+  toastTimer = setTimeout(dismissToast, 4500);
+}
+
+function dismissToast() {
+  const region = document.getElementById("toast-region");
+  if (region) region.innerHTML = "";
+}
 
 async function initApp() {
   if (!isSupabaseConfigured) {
@@ -208,7 +242,7 @@ async function initApp() {
         if (data.type === "token") {
           urlInvite.className = data.class_name;
           urlInvite.displayName = data.display_name;
-          banner.innerHTML = `Персональное приглашение: <strong>${escapeHtml(data.display_name)}</strong> (${escapeHtml(data.class_name)}). Ваши ответы автоматически сохранятся в базу.`;
+          banner.innerHTML = `Персональное приглашение: <strong>${escapeHtml(data.display_name)}</strong> (${escapeHtml(data.class_name)}). Ответы сохранятся в облачную базу автоматически.`;
           document.getElementById("userName").value = data.display_name;
           document.getElementById("userGroup").value = data.class_name;
           document.getElementById("join-code-wrap").classList.add("hidden");
@@ -216,7 +250,7 @@ async function initApp() {
           document.getElementById("user-group-wrap").classList.add("hidden");
         } else {
           urlInvite.className = data.class_name;
-          banner.innerHTML = `Приглашение в класс: <strong>${escapeHtml(data.class_name)}</strong> (код <code class="code-pill">${escapeHtml(urlInvite.classCode)}</code>). Введите ваше имя и пройдите тест.`;
+          banner.innerHTML = `Приглашение в класс <strong>${escapeHtml(data.class_name)}</strong> (код <code>${escapeHtml(urlInvite.classCode)}</code>). Введите имя и перейдите к утверждениям.`;
           document.getElementById("userGroup").value = data.class_name;
           document.getElementById("joinCode").readOnly = true;
         }
@@ -238,8 +272,14 @@ if (document.readyState === "loading") {
 }
 
 function switchMode(mode) {
-  document.getElementById("tab-student").classList.toggle("active", mode === "student");
-  document.getElementById("tab-teacher").classList.toggle("active", mode === "teacher");
+  const tabStudent = document.getElementById("tab-student");
+  const tabTeacher = document.getElementById("tab-teacher");
+
+  tabStudent.classList.toggle("active", mode === "student");
+  tabTeacher.classList.toggle("active", mode === "teacher");
+  tabStudent.setAttribute("aria-current", mode === "student" ? "page" : "false");
+  tabTeacher.setAttribute("aria-current", mode === "teacher" ? "page" : "false");
+
   document.getElementById("screen-results").classList.add("hidden");
 
   if (mode === "student") {
@@ -304,16 +344,17 @@ function renderPage() {
   const slice = activeQuestions.slice(start, start + PAGE_SIZE);
 
   document.getElementById("test-error").classList.add("hidden");
-  document.getElementById("page-text").textContent = `Страница ${currentPage + 1} из ${totalPages}`;
+  document.getElementById("page-text").textContent = `Страница ${currentPage + 1} / ${totalPages}`;
   updateProgress();
 
   container.innerHTML = slice.map((q, idx) => {
     const globalNum = start + idx + 1;
     const saved = answers[q.id];
+    const padded = String(globalNum).padStart(2, "0");
     return `
-      <div class="question-card" id="card-${q.id}">
-        <div class="q-title"><span class="q-num">${globalNum}.</span> ${q.text}</div>
-        <div class="likert">
+      <article class="question-card" id="card-${q.id}">
+        <div class="q-title"><span class="q-num">${padded}.</span> ${escapeHtml(q.text)}</div>
+        <div class="likert" role="radiogroup" aria-label="Вопрос ${globalNum}">
           ${LIKERT_OPTIONS.map(opt => `
             <label>
               <input type="radio" name="ans-${q.id}" value="${opt.val}" ${saved === opt.val ? "checked" : ""}
@@ -322,7 +363,7 @@ function renderPage() {
             </label>
           `).join("")}
         </div>
-      </div>
+      </article>
     `;
   }).join("");
 
@@ -342,7 +383,7 @@ function selectAnswer(qId, val) {
 function updateProgress() {
   const answeredCount = Object.keys(answers).length;
   const total = activeQuestions.length;
-  const pct = Math.round((answeredCount / total) * 100);
+  const pct = total > 0 ? Math.round((answeredCount / total) * 100) : 0;
   document.getElementById("progress-text").textContent = `Отвечено: ${answeredCount} из ${total} (${pct}%)`;
   document.getElementById("progress-fill").style.width = `${pct}%`;
 }
@@ -364,7 +405,7 @@ function validateCurrentPage() {
 
   if (firstMissing) {
     const err = document.getElementById("test-error");
-    err.textContent = "Пожалуйста, ответьте на все вопросы текущей страницы перед переходом дальше.";
+    err.textContent = "Ответьте на все утверждения текущей страницы перед переходом дальше.";
     err.classList.remove("hidden");
     firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
     return false;
@@ -407,7 +448,7 @@ function runDemoProfile() {
     const clamped = Math.max(1, Math.min(5, Math.round(base)));
     answers[q.id] = q.reverse ? (6 - clamped) : clamped;
   });
-  renderResultsUI({ skipDbSave: true });
+  renderResultsUI({ skipDbSave: true, isDemo: true });
 }
 
 async function finishTest() {
@@ -457,7 +498,26 @@ function calculateProfile() {
   });
 }
 
-async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDate = null } = {}) {
+function updatePresentationSummary() {
+  if (!lastProfile.length) return;
+  const t2Rows = Array.from(document.querySelectorAll("#table-2-body tr"));
+  const strengths = t2Rows.map(tr => tr.children[0].querySelector('[contenteditable="true"]').textContent.trim()).filter(Boolean);
+  const risks = t2Rows.map(tr => tr.children[1].querySelector('[contenteditable="true"]').textContent.trim()).filter(Boolean);
+
+  const firstPlanRow = document.querySelector("#table-5-body tr");
+  const goalText = firstPlanRow ? firstPlanRow.children[0].textContent.trim() : "";
+  const metricText = firstPlanRow ? firstPlanRow.children[2].textContent.trim() : "";
+
+  document.getElementById("presentation-summary").innerHTML = `
+    <li><strong>Портрет по Big Five (2–3 наблюдения):</strong> ${escapeHtml(buildPortraitLine(lastProfile))}</li>
+    <li><strong>Сильные стороны (ТОП-3) — как используем:</strong> ${strengths.map(escapeHtml).join("; ")}.</li>
+    <li><strong>Зоны риска (ТОП-3) — что делаем:</strong> ${risks.map(escapeHtml).join("; ")}.</li>
+    <li><strong>Индивидуальный план:</strong> главная цель — ${escapeHtml(goalText.toLowerCase())}; метрика — ${escapeHtml(metricText.toLowerCase())}.</li>
+    <li><strong>Запросы к классу / родителям / учителям:</strong> предсказуемые правила обратной связи, поддержка в выбранной роли, рефлексия прогресса каждые 2 недели.</li>
+  `;
+}
+
+async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDate = null, isDemo = false } = {}) {
   const profile = calculateProfile();
   lastProfile = profile;
   const map = Object.fromEntries(profile.map(p => [p.id, p]));
@@ -474,14 +534,17 @@ async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDat
     ? new Date(customDate).toLocaleString("ru-RU", { dateStyle: "medium", timeStyle: "short" })
     : new Date().toLocaleDateString("ru-RU");
 
-  document.getElementById("result-meta-line").textContent = `${userName} • ${userGroup} • ${dateStr}`;
+  document.getElementById("result-meta-line").textContent = `${userName} · ${userGroup} · ${dateStr}`;
   document.getElementById("chart-meta").textContent = `Профиль: ${userName} (${userGroup}), дата диагностики: ${dateStr}`;
 
   document.getElementById("factor-bars").innerHTML = profile.map(f => `
     <div class="bar-row">
-      <div><strong>${f.name}</strong> <span class="muted-text">(${f.avg.toFixed(2)} / 5)</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(5, f.pct)}%; background:${f.color};"></div></div>
-      <div><span class="badge ${f.level.badgeClass}">${f.level.label} (${f.pct}%)</span></div>
+      <div>
+        <span class="bar-label">${f.name}</span>
+        <span class="bar-score tabular-nums">${f.avg.toFixed(2)} / 5</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(4, f.pct)}%; background:${f.color};"></div></div>
+      <div class="bar-badge-cell"><span class="badge ${f.level.badgeClass} tabular-nums">${f.level.label} · ${f.pct}%</span></div>
     </div>
   `).join("");
 
@@ -491,13 +554,13 @@ async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDat
     const sortedFacets = [...f.facets].sort((a, b) => b.avg - a.avg);
     const facetsHtml = `<ul class="facet-list">${sortedFacets.map(fc => {
       const mark = fc.level.key === "high" ? "▲" : (fc.level.key === "low" ? "▼" : "•");
-      return `<li><strong>${fc.name}:</strong> ${fc.avg.toFixed(1)} (${fc.level.label}) ${mark}</li>`;
+      return `<li><span>${escapeHtml(fc.name)}</span><span class="facet-score-mono tabular-nums">${fc.avg.toFixed(1)} ${mark}</span></li>`;
     }).join("")}</ul>`;
 
     return `
       <tr>
-        <td><strong>${f.name}</strong><br><span class="muted-text" style="font-size:0.8rem;">${f.en}</span></td>
-        <td><span class="badge ${f.level.badgeClass}">${f.level.label}</span><br><span style="font-size:0.85rem;">${f.avg.toFixed(2)} / 5 (${f.pct}%)</span></td>
+        <td><strong>${f.name}</strong><br><span class="mono-meta">${f.en}</span></td>
+        <td><span class="badge ${f.level.badgeClass}">${f.level.label}</span><div class="mono-meta tabular-nums" style="margin-top:6px;">${f.avg.toFixed(2)} / 5 (${f.pct}%)</div></td>
         <td>${facetsHtml}</td>
         <td>${manifest}</td>
         <td>${risk}</td>
@@ -510,8 +573,8 @@ async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDat
   const risks = savedPlan?.top_risks || derivedTop.risks;
   document.getElementById("table-2-body").innerHTML = [0, 1, 2].map(i => `
     <tr>
-      <td><strong>${i + 1})</strong> <span contenteditable="true">${escapeHtml(strengths[i] || "")}</span></td>
-      <td><strong>${i + 1})</strong> <span contenteditable="true">${escapeHtml(risks[i] || "")}</span></td>
+      <td><div class="t2-cell-flex"><span class="t2-num">${i + 1}.</span><span contenteditable="true" oninput="updatePresentationSummary()">${escapeHtml(strengths[i] || "")}</span></div></td>
+      <td><div class="t2-cell-flex"><span class="t2-num">${i + 1}.</span><span contenteditable="true" oninput="updatePresentationSummary()">${escapeHtml(risks[i] || "")}</span></div></td>
     </tr>
   `).join("");
 
@@ -531,8 +594,8 @@ async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDat
       <tr>
         <td>
           <strong>${f.name}</strong><br>
-          <span class="badge ${f.level.badgeClass}" style="margin-top:4px;">${f.level.label} (${f.pct}%)</span>
-          ${f.level.key === "mid" ? '<div class="muted-text" style="font-size:0.78rem; margin-top:4px;">Сбалансировано: берите приёмы по ситуации</div>' : ""}
+          <span class="badge ${f.level.badgeClass}" style="margin-top:6px;">${f.level.label} · ${f.pct}%</span>
+          ${f.level.key === "mid" ? '<div class="hint" style="font-size:0.75rem; margin-top:6px;">Сбалансировано: берите приёмы по ситуации</div>' : ""}
         </td>
         <td class="${highActive}">${f.matrixHigh}</td>
         <td class="${lowActive}">${f.matrixLow}</td>
@@ -543,22 +606,16 @@ async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDat
   const planRows = savedPlan?.plan_rows || buildIndividualPlan(profile);
   document.getElementById("table-5-body").innerHTML = planRows.map(r => `
     <tr>
-      <td contenteditable="true">${escapeHtml(r.goal)}</td>
+      <td contenteditable="true" oninput="updatePresentationSummary()">${escapeHtml(r.goal)}</td>
       <td contenteditable="true">${escapeHtml(r.strategy)}</td>
-      <td contenteditable="true">${escapeHtml(r.assessment)}</td>
+      <td contenteditable="true" oninput="updatePresentationSummary()">${escapeHtml(r.assessment)}</td>
       <td contenteditable="true">${escapeHtml(r.format)}</td>
       <td contenteditable="true">${escapeHtml(r.owner)}</td>
       <td contenteditable="true">${escapeHtml(r.timeline)}</td>
     </tr>
   `).join("");
 
-  document.getElementById("presentation-summary").innerHTML = `
-    <li><strong>Портрет по Big Five (2–3 наблюдения):</strong> ${buildPortraitLine(profile)}</li>
-    <li><strong>Сильные стороны (ТОП-3) — как используем:</strong> ${strengths.map(escapeHtml).join("; ")}.</li>
-    <li><strong>Зоны риска (ТОП-3) — что делаем:</strong> ${risks.map(escapeHtml).join("; ")}.</li>
-    <li><strong>Индивидуальный план:</strong> главная цель — ${escapeHtml((planRows[0]?.goal || "").toLowerCase())}; метрика — ${escapeHtml((planRows[0]?.assessment || "").toLowerCase())}.</li>
-    <li><strong>Запросы к классу / родителям / учителям:</strong> предсказуемые правила обратной связи, поддержка в выбранной роли, рефлексия прогресса каждые 2 недели.</li>
-  `;
+  updatePresentationSummary();
 
   document.getElementById("btn-back-to-dash").classList.toggle("hidden", !viewingContext.isTeacherView);
   document.getElementById("btn-save-plan").classList.toggle("hidden", !viewingContext.isTeacherView);
@@ -575,13 +632,19 @@ async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDat
   const banner = document.getElementById("save-status-banner");
   banner.classList.add("hidden");
 
+  if (isDemo) {
+    banner.className = "alert alert-info no-print";
+    banner.textContent = "Демонстрационный профиль сформирован локально без записи в базу данных.";
+    banner.classList.remove("hidden");
+  }
+
   if (!skipDbSave && !viewingContext.isTeacherView) {
-    const joinCode = urlInvite.classCode || document.getElementById("joinCode").value.trim();
+    const joinCode = urlInvite.classCode || document.getElementById("joinCode").value.trim().toUpperCase();
     const studentToken = urlInvite.studentToken;
 
     if (sb && (joinCode || studentToken)) {
       banner.className = "alert alert-info no-print";
-      banner.textContent = "Сохраняем результаты в облачную базу...";
+      banner.textContent = "Сохранение результатов в облачную базу...";
       banner.classList.remove("hidden");
 
       try {
@@ -605,10 +668,10 @@ async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDat
 
         if (error) throw error;
         banner.className = "alert alert-success no-print";
-        banner.innerHTML = `✓ Результаты успешно сохранены и переданы педагогу (класс: <strong>${escapeHtml(data.class_name)}</strong>, имя: <strong>${escapeHtml(data.display_name)}</strong>).`;
+        banner.innerHTML = `Результаты сохранены и переданы педагогу (класс: <strong>${escapeHtml(data.class_name)}</strong>, имя: <strong>${escapeHtml(data.display_name)}</strong>).`;
       } catch (err) {
         banner.className = "alert alert-danger no-print";
-        banner.textContent = `Не удалось сохранить в базу: ${err.message || err}. Вы всё равно можете скачать таблицы в .docx.`;
+        banner.textContent = `Не удалось сохранить в базу: ${err.message || err}. Вы можете выгрузить таблицы в .docx локально.`;
       }
     }
   }
@@ -752,7 +815,7 @@ async function handleTeacherLogin() {
   errBox.classList.add("hidden");
 
   if (!sb) {
-    errBox.textContent = "Supabase не настроен. Вставьте URL и ANON_KEY в файл app.js.";
+    errBox.textContent = "Supabase не настроен. Укажите URL и ANON_KEY в файле app.js.";
     errBox.classList.remove("hidden");
     return;
   }
@@ -764,6 +827,10 @@ async function handleTeacherLogin() {
     errBox.classList.remove("hidden");
     return;
   }
+
+  const btn = document.getElementById("btn-login-submit");
+  btn.disabled = true;
+  btn.textContent = "Проверка данных...";
 
   try {
     const { data, error } = await sb.rpc("teacher_login", {
@@ -779,6 +846,9 @@ async function handleTeacherLogin() {
   } catch (err) {
     errBox.textContent = err.message || "Ошибка авторизации";
     errBox.classList.remove("hidden");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Войти в кабинет";
   }
 }
 
@@ -789,6 +859,7 @@ async function handleTeacherLogout() {
   teacherToken = null;
   dashData = null;
   selectedClassId = null;
+  confirmDeleteStudentId = null;
   localStorage.removeItem(SESSION_STORAGE_KEY);
   document.getElementById("teacher-dashboard").classList.add("hidden");
   document.getElementById("teacher-login-card").classList.remove("hidden");
@@ -820,14 +891,14 @@ function renderDashboard() {
   const t = dashData.teacher;
   const isPsy = t.status === "психолог";
   const badge = isPsy
-    ? `<span class="badge badge-psy">Статус: психолог (доступ ко всем классам)</span>`
-    : `<span class="badge badge-teach">Статус: педагог (личные классы)</span>`;
+    ? `<span class="badge badge-psy">психолог · все классы</span>`
+    : `<span class="badge badge-teach">педагог · личные классы</span>`;
 
   document.getElementById("dash-welcome").textContent = `${t.full_name} (@${t.username})`;
   document.getElementById("dash-role-line").innerHTML = badge;
   document.getElementById("classes-scope-hint").textContent = isPsy
-    ? "Вы вошли со статусом «психолог» — отображаются все классы в базе данных."
-    : "Вы видите классы, созданные вами.";
+    ? "Расширенный доступ: отображаются все классы и группы образовательной организации."
+    : "Отображаются классы и группы, созданные вами.";
 
   const classes = dashData.classes || [];
   const pillsEl = document.getElementById("class-pills");
@@ -838,9 +909,9 @@ function renderDashboard() {
   }
 
   pillsEl.innerHTML = classes.map(c => `
-    <button class="class-pill ${c.id === selectedClassId ? "active" : ""}" onclick="selectClass('${c.id}')">
-      ${escapeHtml(c.name)} ${c.is_active ? "" : "(закрыт)"}
-      ${isPsy ? `<span style="opacity:0.75; font-weight:400;">(${escapeHtml(c.teacher_name)})</span>` : ""}
+    <button type="button" class="class-pill ${c.id === selectedClassId ? "active" : ""}" onclick="selectClass('${c.id}')">
+      ${escapeHtml(c.name)}${c.is_active ? "" : " (закрыт)"}
+      ${isPsy ? `<span style="opacity:0.7; font-weight:400;"> · ${escapeHtml(c.teacher_name)}</span>` : ""}
     </button>
   `).join("");
 
@@ -862,7 +933,7 @@ function renderDashboard() {
   const passedStudents = classStudents.filter(s => (resultsByStudent[s.id] || []).length > 0);
 
   document.getElementById("sel-class-title").textContent = `Класс: ${cls.name}`;
-  document.getElementById("sel-class-meta").innerHTML = `Куратор: <strong>${escapeHtml(cls.teacher_name)}</strong> • Приём ответов: ${cls.is_active ? '<span style="color:var(--success);font-weight:700;">Открыт</span>' : '<span style="color:var(--danger);font-weight:700;">Закрыт</span>'}`;
+  document.getElementById("sel-class-meta").innerHTML = `Куратор: <strong>${escapeHtml(cls.teacher_name)}</strong> · <span class="badge ${cls.is_active ? "badge-high" : "badge-closed"}">${cls.is_active ? "Приём открыт" : "Приём закрыт"}</span>`;
   document.getElementById("stat-students").textContent = classStudents.length;
   document.getElementById("stat-passed").textContent = passedStudents.length;
   document.getElementById("stat-code").textContent = cls.join_code;
@@ -874,13 +945,17 @@ function renderDashboard() {
 
 function selectClass(classId) {
   selectedClassId = classId;
+  confirmDeleteStudentId = null;
   renderDashboard();
 }
 
 async function createNewClass() {
   const nameInput = document.getElementById("newClassName");
   const name = nameInput.value.trim();
-  if (!name) return alert("Введите название класса или группы.");
+  if (!name) {
+    showToast("error", "Введите название класса или группы.");
+    return;
+  }
 
   const randCode = "CL-" + Math.random().toString(36).substring(2, 6).toUpperCase();
   try {
@@ -893,8 +968,9 @@ async function createNewClass() {
     nameInput.value = "";
     selectedClassId = data.id;
     await loadDashboard();
+    showToast("success", `Класс «${name}» создан.`);
   } catch (err) {
-    alert("Ошибка создания класса: " + (err.message || err));
+    showToast("error", "Ошибка создания класса: " + (err.message || err));
   }
 }
 
@@ -909,15 +985,19 @@ async function toggleSelectedClass() {
     });
     if (error) throw error;
     await loadDashboard();
+    showToast("info", cls.is_active ? "Приём ответов закрыт." : "Приём ответов открыт.");
   } catch (err) {
-    alert("Ошибка: " + (err.message || err));
+    showToast("error", "Ошибка: " + (err.message || err));
   }
 }
 
 async function addStudentsBulk() {
   const raw = document.getElementById("bulkNames").value;
   const names = raw.split("\n").map(s => s.trim()).filter(Boolean);
-  if (!names.length) return alert("Введите хотя бы одно имя.");
+  if (!names.length) {
+    showToast("error", "Введите хотя бы одно имя.");
+    return;
+  }
 
   try {
     const { error } = await sb.rpc("teacher_add_students", {
@@ -929,22 +1009,34 @@ async function addStudentsBulk() {
     document.getElementById("bulkNames").value = "";
     document.getElementById("bulk-add-box").classList.add("hidden");
     await loadDashboard();
+    showToast("success", `Добавлено учеников: ${names.length}.`);
   } catch (err) {
-    alert("Ошибка добавления: " + (err.message || err));
+    showToast("error", "Ошибка добавления: " + (err.message || err));
   }
 }
 
-async function deleteStudent(studentId, name) {
-  if (!confirm(`Удалить ученика «${name}» и все его результаты?`)) return;
+function requestDeleteStudent(studentId) {
+  confirmDeleteStudentId = studentId;
+  renderDashboard();
+}
+
+function cancelDeleteStudent() {
+  confirmDeleteStudentId = null;
+  renderDashboard();
+}
+
+async function confirmDeleteStudent(studentId) {
   try {
     const { error } = await sb.rpc("teacher_delete_student", {
       p_token: teacherToken,
       p_student_id: studentId
     });
     if (error) throw error;
+    confirmDeleteStudentId = null;
     await loadDashboard();
+    showToast("info", "Запись ученика удалена.");
   } catch (err) {
-    alert("Ошибка удаления: " + (err.message || err));
+    showToast("error", "Ошибка удаления: " + (err.message || err));
   }
 }
 
@@ -956,46 +1048,64 @@ function copyClassLink() {
   const cls = dashData.classes.find(c => c.id === selectedClassId);
   if (!cls) return;
   const url = `${getBaseUrl()}?class=${encodeURIComponent(cls.join_code)}`;
-  navigator.clipboard.writeText(url).then(() => alert(`Ссылка для класса «${cls.name}» скопирована:\n${url}`));
+  navigator.clipboard.writeText(url)
+    .then(() => showToast("success", `Ссылка для класса «${cls.name}» скопирована.`))
+    .catch(() => showToast("error", "Не удалось скопировать ссылку в буфер обмена."));
 }
 
 function copyStudentLink(token, name) {
   const url = `${getBaseUrl()}?token=${encodeURIComponent(token)}`;
-  navigator.clipboard.writeText(url).then(() => alert(`Персональная ссылка для «${name}» скопирована:\n${url}`));
+  navigator.clipboard.writeText(url)
+    .then(() => showToast("success", `Персональная ссылка для «${name}» скопирована.`))
+    .catch(() => showToast("error", "Не удалось скопировать ссылку в буфер обмена."));
 }
 
 function renderStudentsTable(students, resultsByStudent) {
   const tbody = document.getElementById("students-table-body");
   if (!students.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--muted);">В классе пока нет тестируемых. Отправьте ученикам ссылку с кодом класса или добавьте список вручную.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:28px; color:var(--text-muted);">В классе пока нет тестируемых. Отправьте ученикам ссылку с кодом класса или добавьте список вручную.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = students.map(s => {
     const resList = resultsByStudent[s.id] || [];
     const latest = resList[0];
-    let dateCell = `<span class="muted-text">Ещё не проходил(а)</span>`;
+    const isConfirming = confirmDeleteStudentId === s.id;
+    let dateCell = `<span class="hint" style="margin:0;">Ещё не проходил(а)</span>`;
     let briefCell = "—";
 
     if (latest) {
-      dateCell = `${new Date(latest.created_at).toLocaleString("ru-RU", { dateStyle: "short", timeStyle: "short" })} <span class="hint">(${resList.length} зам.)</span>`;
+      dateCell = `${new Date(latest.created_at).toLocaleString("ru-RU", { dateStyle: "short", timeStyle: "short" })} <span class="mono-meta">(${resList.length})</span>`;
       const fs = latest.factor_scores || {};
       briefCell = ["E", "A", "C", "N", "O"].map(k => {
         const val = fs[k]?.avg ?? "—";
-        return `<strong>${k}:</strong> ${val}`;
-      }).join(" • ");
+        return `${k}: ${val}`;
+      }).join(" · ");
     }
+
+    const deleteControls = isConfirming
+      ? `<button type="button" class="btn-danger-subtle" style="font-weight:600;" onclick="confirmDeleteStudent('${s.id}')">Подтвердить</button>
+         <button type="button" class="btn-ghost btn-sm" onclick="cancelDeleteStudent()">Отмена</button>`
+      : `<button type="button" class="btn-danger-subtle" aria-label="Удалить ${escapeAttr(s.display_name)}" onclick="requestDeleteStudent('${s.id}')">Удалить</button>`;
 
     return `
       <tr>
         <td><strong>${escapeHtml(s.display_name)}</strong></td>
-        <td><button class="btn-outline btn-sm" onclick="copyStudentLink('${s.access_token}', '${escapeAttr(s.display_name)}')">Личная ссылка</button></td>
-        <td>${dateCell}</td>
-        <td style="font-size:0.84rem;">${briefCell}</td>
         <td>
-          <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            ${latest ? `<button class="btn-primary btn-sm" onclick="openStudentResult('${s.id}', '${latest.id}')">Таблицы 1–5</button>` : ""}
-            <button class="btn-danger btn-sm" onclick="deleteStudent('${s.id}', '${escapeAttr(s.display_name)}')">✕</button>
+          <button type="button" class="btn-secondary btn-sm" onclick="copyStudentLink('${s.access_token}', '${escapeAttr(s.display_name)}')">
+            <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5" />
+              <path d="M10.5 3.5H4C3.17 3.5 2.5 4.17 2.5 5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <span>Личная ссылка</span>
+          </button>
+        </td>
+        <td style="font-size:0.8rem;">${dateCell}</td>
+        <td class="mono-meta tabular-nums">${briefCell}</td>
+        <td>
+          <div class="btn-group">
+            ${latest ? `<button type="button" class="btn-primary btn-sm" onclick="openStudentResult('${s.id}', '${latest.id}')">Таблицы 1–5</button>` : ""}
+            ${deleteControls}
           </div>
         </td>
       </tr>
@@ -1024,16 +1134,19 @@ function renderClassProfile(cls, students, resultsByStudent) {
     return { ...f, avg, pct, level: getLevel(avg), highNames, lowNames, midCount };
   });
 
-  const barsHtml = `<div class="factor-bars">${agg.map(f => `
+  const barsHtml = `<div class="factor-bars" style="margin-top:16px;">${agg.map(f => `
     <div class="bar-row">
-      <div><strong>${f.name}</strong> <span class="muted-text">(ср. ${f.avg.toFixed(2)})</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(5, f.pct)}%; background:${f.color};"></div></div>
-      <div><span class="badge ${f.level.badgeClass}">${f.level.label} (${f.pct}%)</span></div>
+      <div>
+        <span class="bar-label">${f.name}</span>
+        <span class="bar-score tabular-nums">ср. ${f.avg.toFixed(2)}</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(4, f.pct)}%; background:${f.color};"></div></div>
+      <div class="bar-badge-cell"><span class="badge ${f.level.badgeClass} tabular-nums">${f.level.label} · ${f.pct}%</span></div>
     </div>
   `).join("")}</div>`;
 
   const tableHtml = `
-    <div class="table-wrap" style="margin-top:16px;">
+    <div class="table-wrap" style="margin-top:20px;">
       <table class="res-table" id="class-agg-table">
         <thead>
           <tr>
@@ -1048,10 +1161,10 @@ function renderClassProfile(cls, students, resultsByStudent) {
           ${agg.map(f => `
             <tr>
               <td><strong>${f.name}</strong></td>
-              <td>${f.avg.toFixed(2)} / 5 (${f.pct}%)</td>
-              <td><strong>${f.highNames.length}</strong>${f.highNames.length ? `: ${f.highNames.map(escapeHtml).join(", ")}` : ""}</td>
-              <td><strong>${f.midCount}</strong></td>
-              <td><strong>${f.lowNames.length}</strong>${f.lowNames.length ? `: ${f.lowNames.map(escapeHtml).join(", ")}` : ""}</td>
+              <td class="mono-meta tabular-nums">${f.avg.toFixed(2)} / 5 (${f.pct}%)</td>
+              <td><strong class="mono-meta">${f.highNames.length}</strong>${f.highNames.length ? `: ${f.highNames.map(escapeHtml).join(", ")}` : ""}</td>
+              <td><strong class="mono-meta tabular-nums">${f.midCount}</strong></td>
+              <td><strong class="mono-meta">${f.lowNames.length}</strong>${f.lowNames.length ? `: ${f.lowNames.map(escapeHtml).join(", ")}` : ""}</td>
             </tr>
           `).join("")}
         </tbody>
@@ -1116,8 +1229,8 @@ async function saveCurrentPlanToDb() {
   if (!sb || !teacherToken || !viewingContext.resultId) return;
 
   const t2Rows = Array.from(document.querySelectorAll("#table-2-body tr"));
-  const top_strengths = t2Rows.map(tr => tr.children[0].querySelector("span").textContent.trim());
-  const top_risks = t2Rows.map(tr => tr.children[1].querySelector("span").textContent.trim());
+  const top_strengths = t2Rows.map(tr => tr.children[0].querySelector('[contenteditable="true"]').textContent.trim());
+  const top_risks = t2Rows.map(tr => tr.children[1].querySelector('[contenteditable="true"]').textContent.trim());
 
   const hypotheses = Array.from(document.querySelectorAll("#table-3-body tr")).map(tr => ({
     component: tr.children[0].textContent.trim(),
@@ -1152,7 +1265,7 @@ async function saveCurrentPlanToDb() {
     else dashData.plans.push(updatedObj);
 
     banner.className = "alert alert-success no-print";
-    banner.textContent = "✓ Правки индивидуального плана и таблиц сохранены в базу данных.";
+    banner.textContent = "Правки индивидуального плана и таблиц сохранены в базу данных.";
     banner.classList.remove("hidden");
   } catch (err) {
     banner.className = "alert alert-danger no-print";
@@ -1296,11 +1409,11 @@ function domTableToWordXml(tableId, colWidths) {
     const cellsXml = cells.map((cell, cIdx) => {
       const w = colWidths[cIdx] || Math.floor(totalW / cells.length);
       const fill = isHeader
-        ? "E2E8F0"
-        : (cell.classList.contains("cell-active") ? "DBEAFE" : (rIdx % 2 === 1 ? "F8FAFC" : "FFFFFF"));
+        ? "F7F6F3"
+        : (cell.classList.contains("cell-active") ? "E1F3FE" : (rIdx % 2 === 1 ? "FBFBFA" : "FFFFFF"));
       const lines = extractCellLines(cell);
       const paragraphs = lines.map((line, lIdx) =>
-        wParagraph(line, { size: 19, bold: isHeader, color: isHeader ? "0F172A" : "1E293B", after: lIdx === lines.length - 1 ? 40 : 30 })
+        wParagraph(line, { size: 19, bold: isHeader, color: isHeader ? "111111" : "2F3437", after: lIdx === lines.length - 1 ? 40 : 30 })
       ).join("");
       return `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="${fill}"/></w:tcPr>${paragraphs}</w:tc>`;
     }).join("");
@@ -1308,7 +1421,7 @@ function domTableToWordXml(tableId, colWidths) {
     return `<w:tr>${trPr}${cellsXml}</w:tr>`;
   }).join("");
 
-  return `<w:tbl><w:tblPr><w:tblW w:w="${totalW}" w:type="dxa"/><w:tblBorders><w:top w:val="single" w:sz="6" w:space="0" w:color="94A3B8"/><w:left w:val="single" w:sz="6" w:space="0" w:color="94A3B8"/><w:bottom w:val="single" w:sz="6" w:space="0" w:color="94A3B8"/><w:right w:val="single" w:sz="6" w:space="0" w:color="94A3B8"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/></w:tblBorders><w:tblCellMar><w:top w:w="90" w:type="dxa"/><w:left w:w="110" w:type="dxa"/><w:bottom w:w="90" w:type="dxa"/><w:right w:w="110" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${gridCols}</w:tblGrid>${rowsXml}</w:tbl>`;
+  return `<w:tbl><w:tblPr><w:tblW w:w="${totalW}" w:type="dxa"/><w:tblBorders><w:top w:val="single" w:sz="6" w:space="0" w:color="CCCCCC"/><w:left w:val="single" w:sz="6" w:space="0" w:color="CCCCCC"/><w:bottom w:val="single" w:sz="6" w:space="0" w:color="CCCCCC"/><w:right w:val="single" w:sz="6" w:space="0" w:color="CCCCCC"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="EAEAEA"/><w:insideV w:val="single" w:sz="4" w:space="0" w:color="EAEAEA"/></w:tblBorders><w:tblCellMar><w:top w:w="90" w:type="dxa"/><w:left w:w="110" w:type="dxa"/><w:bottom w:w="90" w:type="dxa"/><w:right w:w="110" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${gridCols}</w:tblGrid>${rowsXml}</w:tbl>`;
 }
 
 function downloadDocxParts(parts, filename) {
@@ -1357,25 +1470,25 @@ function exportToDocx() {
   const safeFileName = rawName.replace(/[^\p{L}\p{N}_-]+/gu, "_");
 
   const parts = [
-    wParagraph("Профиль по модели Big Five и индивидуальный план сопровождения", { size: 30, bold: true, color: "1E3A8A", after: 80 }),
-    wParagraph(metaText, { size: 21, color: "475569", after: 140 }),
-    wParagraph("Сводные показатели по 5 факторам", { size: 24, bold: true, color: "1E3A8A", before: 80, after: 60 }),
+    wParagraph("Профиль по модели Big Five и индивидуальный план сопровождения", { size: 30, bold: true, color: "111111", after: 80 }),
+    wParagraph(metaText, { size: 21, color: "787774", after: 140 }),
+    wParagraph("Сводные показатели по 5 факторам", { size: 24, bold: true, color: "111111", before: 80, after: 60 }),
     ...lastProfile.map(f => wParagraph(`• ${f.name}: ${f.level.label} — ${f.avg.toFixed(2)} из 5 (${f.pct}%)`, { size: 20, after: 40 })),
-    wParagraph("Таблица 1. Сводные результаты по модели Big Five", { size: 24, bold: true, color: "1E3A8A", before: 180, after: 80 }),
+    wParagraph("Таблица 1. Сводные результаты по модели Big Five", { size: 24, bold: true, color: "111111", before: 180, after: 80 }),
     domTableToWordXml("table-1", [1550, 1350, 2738, 2000, 2000]),
-    wParagraph("Таблица 2. ТОП-3 сильных качества и ТОП-3 зоны риска", { size: 24, bold: true, color: "1E3A8A", before: 200, after: 80 }),
+    wParagraph("Таблица 2. ТОП-3 сильных качества и ТОП-3 зоны риска", { size: 24, bold: true, color: "111111", before: 200, after: 80 }),
     domTableToWordXml("table-2", [4819, 4819]),
-    wParagraph("Таблица 3. Гипотезы о влиянии особенностей на учебную деятельность", { size: 24, bold: true, color: "1E3A8A", before: 200, after: 80 }),
+    wParagraph("Таблица 3. Гипотезы о влиянии особенностей на учебную деятельность", { size: 24, bold: true, color: "111111", before: 200, after: 80 }),
     domTableToWordXml("table-3", [2038, 3800, 3800]),
-    wParagraph("Таблица 4. Матрица стратегий 5Ф (выделены рекомендации под профиль)", { size: 24, bold: true, color: "1E3A8A", before: 200, after: 80 }),
+    wParagraph("Таблица 4. Матрица стратегий 5Ф (выделены рекомендации под профиль)", { size: 24, bold: true, color: "111111", before: 200, after: 80 }),
     domTableToWordXml("table-4", [1938, 3850, 3850]),
-    wParagraph("Таблица 5. Индивидуальный план сопровождения", { size: 24, bold: true, color: "1E3A8A", before: 200, after: 80 }),
+    wParagraph("Таблица 5. Индивидуальный план сопровождения", { size: 24, bold: true, color: "111111", before: 200, after: 80 }),
     domTableToWordXml("table-5", [1650, 2100, 1650, 1650, 1294, 1294]),
-    wParagraph("Черновик мини-презентации профиля (3–5 минут)", { size: 24, bold: true, color: "1E3A8A", before: 200, after: 80 }),
+    wParagraph("Черновик мини-презентации профиля (3–5 минут)", { size: 24, bold: true, color: "111111", before: 200, after: 80 }),
     ...Array.from(document.querySelectorAll("#presentation-summary li")).map((li, idx) =>
       wParagraph(`${idx + 1}. ${li.textContent.replace(/\s+/g, " ").trim()}`, { size: 20, after: 60 })
     ),
-    wParagraph("Этическая ремарка: результаты теста — не ярлык и не приговор; используем их как гипотезы для педагогических решений и наблюдаем динамику.", { size: 19, color: "475569", before: 140, after: 60 })
+    wParagraph("Этическая ремарка: результаты теста — не ярлык и не приговор; используем их как гипотезы для педагогических решений и наблюдаем динамику.", { size: 19, color: "787774", before: 140, after: 60 })
   ];
 
   downloadDocxParts(parts, `BigFive_${safeFileName}.docx`);
@@ -1384,14 +1497,17 @@ function exportToDocx() {
 function exportClassProfileDocx() {
   const cls = dashData?.classes.find(c => c.id === selectedClassId);
   const tbl = document.getElementById("class-agg-table");
-  if (!cls || !tbl) return alert("Сначала дождитесь результатов хотя бы одного ученика в классе.");
+  if (!cls || !tbl) {
+    showToast("info", "Сначала дождитесь результатов хотя бы одного ученика в классе.");
+    return;
+  }
 
   const safeClass = cls.name.replace(/[^\p{L}\p{N}_-]+/gu, "_");
   const parts = [
-    wParagraph(`Сводный профиль класса: ${cls.name}`, { size: 30, bold: true, color: "1E3A8A", after: 80 }),
-    wParagraph(`Куратор: ${cls.teacher_name} | Дата выгрузки: ${new Date().toLocaleDateString("ru-RU")}`, { size: 21, color: "475569", after: 160 }),
+    wParagraph(`Сводный профиль класса: ${cls.name}`, { size: 30, bold: true, color: "111111", after: 80 }),
+    wParagraph(`Куратор: ${cls.teacher_name} | Дата выгрузки: ${new Date().toLocaleDateString("ru-RU")}`, { size: 21, color: "787774", after: 160 }),
     domTableToWordXml("class-agg-table", [2100, 1800, 2300, 1138, 2300]),
-    wParagraph("Этическая ремарка: результаты теста — не ярлык и не приговор; используем их как гипотезы для педагогических решений и наблюдаем динамику.", { size: 19, color: "475569", before: 160, after: 60 })
+    wParagraph("Этическая ремарка: результаты теста — не ярлык и не приговор; используем их как гипотезы для педагогических решений и наблюдаем динамику.", { size: 19, color: "787774", before: 160, after: 60 })
   ];
   downloadDocxParts(parts, `ClassProfile_${safeClass}.docx`);
 }

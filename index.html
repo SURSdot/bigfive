@@ -4,334 +4,471 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Big Five — Профиль ученика и класса</title>
+  <meta
+    name="description"
+    content="Психолого-педагогическая диагностика по модели «Большой пятёрки» (Ресурс 7.2 / 7.2.1), построение таблиц сопровождения, сводный профиль класса и экспорт в .docx."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Перейти к основному содержимому</a>
+
   <div class="container">
     <header class="hero">
-      <div>
+      <div class="hero-copy">
+        <div class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          <span>Диагностическая платформа</span>
+        </div>
         <h1>Big Five — Профиль ученика и класса</h1>
-        <p>Тестирование по модели «Большой пятёрки» (Ресурс 7.2 / 7.2.1) с облачным хранением в Supabase</p>
+        <p>Тестирование по модели «Большой пятёрки» (Ресурс 7.2 / 7.2.1) и индивидуальное сопровождение</p>
       </div>
-      <div class="nav-tabs no-print" id="main-nav">
-        <button class="nav-tab active" id="tab-student" onclick="switchMode('student')">Пройти тест</button>
-        <button class="nav-tab" id="tab-teacher" onclick="switchMode('teacher')">Кабинет педагога / психолога</button>
-      </div>
+
+      <nav class="nav-tabs no-print" id="main-nav" aria-label="Переключение режима работы">
+        <button type="button" class="nav-tab active" id="tab-student" aria-current="page" onclick="switchMode('student')">
+          Пройти тест
+        </button>
+        <button type="button" class="nav-tab" id="tab-teacher" onclick="switchMode('teacher')">
+          Кабинет педагога / психолога
+        </button>
+      </nav>
     </header>
 
-    <div id="config-warning" class="alert alert-warn hidden no-print">
-      <strong>Режим без облачной БД:</strong> в файле <code>app.js</code> не указаны <code>URL</code> и <code>ANON_KEY</code> из Supabase. Тест и выгрузка в <code>.docx</code> работают локально, а для входа педагога заполните настройки Supabase.
+    <div id="config-warning" class="alert alert-warn hidden no-print" role="status">
+      <strong>Локальный режим без облачной БД:</strong> в файле <code>app.js</code> не указаны <code>URL</code> и <code>ANON_KEY</code> из Supabase. Тест и выгрузка в <code>.docx</code> работают локально; для входа педагога заполните настройки Supabase.
     </div>
 
-    <!-- БЛОК ТЕСТИРУЕМОГО -->
-    <div id="section-student">
-      <section id="screen-start" class="card">
-        <h2>Подготовка к тестированию</h2>
-        <div id="invite-banner" class="alert alert-info hidden"></div>
+    <main id="main-content">
+      <!-- БЛОК ТЕСТИРУЕМОГО -->
+      <div id="section-student">
+        <section id="screen-start" class="card animate-in" aria-labelledby="prep-heading">
+          <div class="section-head">
+            <span class="section-kicker">Методика Big Five · Ресурс 7.2 / 7.2.1</span>
+            <h2 id="prep-heading" class="editorial-title">Подготовка к диагностике</h2>
+            <p class="section-lead">
+              Оценка пяти базовых личностных факторов и 29 аспектов для построения индивидуального образовательного маршрута.
+            </p>
+          </div>
 
-        <div class="grid-3" style="margin-top: 12px;">
-          <div id="join-code-wrap">
-            <label class="field-label" for="joinCode">Код класса (выдаёт педагог)</label>
-            <input type="text" id="joinCode" placeholder="Например: CL-4821 (или пусто)" />
-          </div>
-          <div id="user-name-wrap">
-            <label class="field-label" for="userName">Имя / ФИО (или код ученика)</label>
-            <input type="text" id="userName" placeholder="Например: Айдана С." />
-          </div>
-          <div id="user-group-wrap">
-            <label class="field-label" for="userGroup">Класс / заметка (необязательно)</label>
-            <input type="text" id="userGroup" placeholder="Например: 9 «А» класс" />
-          </div>
-        </div>
+          <div id="invite-banner" class="alert alert-info hidden" role="status"></div>
 
-        <h3 style="margin-top: 18px;">Выберите формат теста</h3>
-        <div class="mode-options">
-          <label class="mode-box active" id="mode-full-box">
-            <input type="radio" name="testMode" value="full" checked />
-            <div>
-              <strong>Полный тест (58 утверждений)</strong>
-              <div class="mode-sub">По 2 вопроса на каждый из 29 аспектов. ~6–8 минут.</div>
+          <div class="grid-3 form-grid">
+            <div id="join-code-wrap">
+              <label class="field-label" for="joinCode">Код класса (выдаёт педагог)</label>
+              <input type="text" id="joinCode" class="input-mono-code" placeholder="Например: CL-4821" />
             </div>
-          </label>
-          <label class="mode-box" id="mode-express-box">
-            <input type="radio" name="testMode" value="express" />
-            <div>
-              <strong>Экспресс-тест (29 утверждений)</strong>
-              <div class="mode-sub">По 1 вопросу на каждый аспект. ~3 минуты.</div>
+            <div id="user-name-wrap">
+              <label class="field-label" for="userName">Имя / ФИО (или код ученика)</label>
+              <input type="text" id="userName" placeholder="Например: Айдана С." />
             </div>
-          </label>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-primary" onclick="startTest()">Начать тестирование</button>
-          <button class="btn-outline" onclick="runDemoProfile()">Демо-заполнение (пример таблиц)</button>
-        </div>
-      </section>
-
-      <section id="screen-test" class="hidden">
-        <div class="progress-wrap no-print">
-          <div class="progress-meta">
-            <span id="progress-text">Отвечено: 0 из 58</span>
-            <span id="page-text">Страница 1 из 6</span>
+            <div id="user-group-wrap">
+              <label class="field-label" for="userGroup">Класс / заметка (необязательно)</label>
+              <input type="text" id="userGroup" placeholder="Например: 9 «А» класс" />
+            </div>
           </div>
-          <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-        </div>
 
-        <div id="questions-container"></div>
-        <div id="test-error" class="alert alert-danger hidden"></div>
+          <fieldset class="mode-fieldset">
+            <legend class="fieldset-legend">Формат тестирования</legend>
+            <div class="mode-options">
+              <label class="mode-box active" id="mode-full-box">
+                <input type="radio" name="testMode" value="full" checked />
+                <div>
+                  <div class="mode-title">Полный тест (58 утверждений)</div>
+                  <div class="mode-sub">По 2 вопроса на каждый из 29 аспектов. Расчётное время — 6–8 минут.</div>
+                </div>
+              </label>
+              <label class="mode-box" id="mode-express-box">
+                <input type="radio" name="testMode" value="express" />
+                <div>
+                  <div class="mode-title">Экспресс-тест (29 утверждений)</div>
+                  <div class="mode-sub">По 1 вопросу на каждый аспект. Расчётное время — около 3 минут.</div>
+                </div>
+              </label>
+            </div>
+          </fieldset>
 
-        <div class="card btn-row" style="justify-content: space-between;">
-          <button class="btn-secondary" id="btn-prev" onclick="prevPage()">← Назад</button>
-          <div class="btn-group">
-            <button class="btn-outline" onclick="fillCurrentPageRandom()">Автозаполнить страницу</button>
-            <button class="btn-primary" id="btn-next" onclick="nextPage()">Далее →</button>
-            <button class="btn-success hidden" id="btn-finish" onclick="finishTest()">Завершить и получить таблицы ✓</button>
+          <div class="btn-row divider-top">
+            <button type="button" class="btn-primary" onclick="startTest()">
+              <span>Начать тестирование</span>
+              <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button type="button" class="btn-secondary" onclick="runDemoProfile()">
+              Демо-заполнение (пример таблиц 1–5)
+            </button>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
 
-    <!-- КАБИНЕТ ПЕДАГОГА / ПСИХОЛОГА -->
-    <div id="section-teacher" class="hidden">
-      <section id="teacher-login-card" class="card login-box">
-        <h2>Вход для педагогов и психологов</h2>
-        <p class="hint" style="margin-bottom: 14px;">
-          Самостоятельная регистрация отключена. Используйте имя пользователя и пароль, созданные администратором в базе данных.
-        </p>
-        <div class="form-group">
-          <label class="field-label" for="loginUsername">Имя пользователя</label>
-          <input type="text" id="loginUsername" placeholder="Например: teacher1" />
-        </div>
-        <div class="form-group">
-          <label class="field-label" for="loginPassword">Пароль</label>
-          <input type="password" id="loginPassword" placeholder="Введите пароль" onkeydown="if(event.key==='Enter') handleTeacherLogin()" />
-        </div>
-        <div id="login-error" class="alert alert-danger hidden"></div>
-        <button class="btn-primary" style="width: 100%;" onclick="handleTeacherLogin()">Войти в кабинет</button>
-      </section>
-
-      <section id="teacher-dashboard" class="hidden">
-        <div class="card flex-between">
-          <div>
-            <h2 style="margin: 0 0 4px;" id="dash-welcome">Кабинет</h2>
-            <div id="dash-role-line" class="muted-text"></div>
+        <section id="screen-test" class="hidden animate-in" aria-label="Прохождение теста">
+          <div class="progress-wrap no-print">
+            <div class="progress-meta">
+              <span id="progress-text" class="tabular-nums">Отвечено: 0 из 58</span>
+              <span id="page-text" class="mono-meta tabular-nums">Страница 1 / 6</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
           </div>
-          <div class="btn-row" style="margin: 0;">
-            <button class="btn-outline btn-sm" onclick="loadDashboard()">↻ Обновить данные</button>
-            <button class="btn-secondary btn-sm" onclick="handleTeacherLogout()">Выйти</button>
-          </div>
-        </div>
 
-        <div class="card">
-          <div class="flex-between" style="align-items: flex-end;">
-            <div style="flex: 1; min-width: 240px;">
-              <h3 style="margin-bottom: 6px;">Классы и группы</h3>
-              <p class="hint" style="margin: 0;" id="classes-scope-hint"></p>
+          <div id="questions-container"></div>
+          <div id="test-error" class="alert alert-danger hidden" role="alert"></div>
+
+          <div class="card test-nav-bar">
+            <button type="button" class="btn-secondary" id="btn-prev" onclick="prevPage()">
+              <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M10 12.5L5.5 8L10 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>Назад</span>
+            </button>
+            <div class="btn-group">
+              <button type="button" class="btn-ghost" onclick="fillCurrentPageRandom()">Автозаполнить страницу</button>
+              <button type="button" class="btn-primary" id="btn-next" onclick="nextPage()">
+                <span>Далее</span>
+                <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+              <button type="button" class="btn-primary hidden" id="btn-finish" onclick="finishTest()">
+                <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Завершить и сформировать таблицы</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- КАБИНЕТ ПЕДАГОГА / ПСИХОЛОГА -->
+      <div id="section-teacher" class="hidden">
+        <section id="teacher-login-card" class="card login-box animate-in" aria-labelledby="login-heading">
+          <span class="section-kicker">Закрытый контур</span>
+          <h2 id="login-heading" class="editorial-title">Вход для педагогов и психологов</h2>
+          <p class="hint">
+            Самостоятельная регистрация отключена. Используйте имя пользователя и пароль, выданные администратором базы.
+          </p>
+
+          <form class="login-form" onsubmit="event.preventDefault(); handleTeacherLogin();">
+            <div class="form-group">
+              <label class="field-label" for="loginUsername">Имя пользователя</label>
+              <input type="text" id="loginUsername" autocomplete="username" placeholder="Например: teacher1" />
+            </div>
+            <div class="form-group">
+              <label class="field-label" for="loginPassword">Пароль</label>
+              <input type="password" id="loginPassword" autocomplete="current-password" placeholder="Введите пароль" />
+            </div>
+            <div id="login-error" class="alert alert-danger hidden" role="alert"></div>
+            <button type="submit" class="btn-primary btn-full" id="btn-login-submit">Войти в кабинет</button>
+          </form>
+        </section>
+
+        <section id="teacher-dashboard" class="hidden animate-in" aria-label="Кабинет педагога и психолога">
+          <div class="card flex-between">
+            <div>
+              <div class="dash-title-row">
+                <h2 class="editorial-title-sm" id="dash-welcome">Кабинет</h2>
+                <span id="dash-role-line"></span>
+              </div>
+              <p class="hint" id="classes-scope-hint"></p>
             </div>
             <div class="btn-group">
-              <input type="text" id="newClassName" placeholder="Новый класс (напр. 9 «А»)" style="width: 210px;" />
-              <button class="btn-primary" onclick="createNewClass()">+ Создать класс</button>
+              <button type="button" class="btn-secondary btn-sm" onclick="loadDashboard()">
+                <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M13.5 8A5.5 5.5 0 1 1 11.88 4.11M13.5 2.5V5.5H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>Обновить</span>
+              </button>
+              <button type="button" class="btn-ghost btn-sm" onclick="handleTeacherLogout()">Выйти</button>
             </div>
           </div>
 
-          <div class="class-pills" id="class-pills"></div>
-          <div id="class-empty-hint" class="hint hidden">Пока нет ни одного класса. Создайте первый класс справа.</div>
+          <div class="card">
+            <div class="flex-between" style="align-items: flex-end;">
+              <div>
+                <h3 class="uppercase-subhead">Классы и группы</h3>
+                <p class="hint">Выберите класс для просмотра сводного профиля и персональных результатов.</p>
+              </div>
+              <form class="btn-group" onsubmit="event.preventDefault(); createNewClass();">
+                <input type="text" id="newClassName" aria-label="Название нового класса" placeholder="Новый класс (напр. 9 «А»)" style="width: 215px;" />
+                <button type="submit" class="btn-primary">
+                  <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M8 3.5V12.5M3.5 8H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                  <span>Создать класс</span>
+                </button>
+              </form>
+            </div>
+
+            <div class="class-pills" id="class-pills"></div>
+            <div id="class-empty-hint" class="empty-dashed hidden">
+              Пока нет ни одного класса. Создайте первый класс справа.
+            </div>
+          </div>
+
+          <div id="selected-class-panel" class="hidden">
+            <div class="card">
+              <div class="flex-between section-head-compact">
+                <div>
+                  <h2 class="editorial-title-sm" id="sel-class-title">Класс</h2>
+                  <div class="muted-text" id="sel-class-meta"></div>
+                </div>
+                <div class="btn-group">
+                  <button type="button" class="btn-secondary btn-sm" onclick="copyClassLink()">
+                    <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5" />
+                      <path d="M10.5 3.5H4C3.17 3.5 2.5 4.17 2.5 5V11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                    <span>Ссылка для учеников</span>
+                  </button>
+                  <button type="button" class="btn-secondary btn-sm" id="btn-toggle-class" onclick="toggleSelectedClass()">
+                    Закрыть приём ответов
+                  </button>
+                  <button type="button" class="btn-primary btn-sm" onclick="exportClassProfileDocx()">
+                    <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M8 2.5V10.5M8 10.5L5 7.5M8 10.5L11 7.5M3 13.5H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span>Профиль класса (.docx)</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid-3" style="margin-top: 18px;">
+                <div class="stat-box">
+                  <div class="stat-num tabular-nums" id="stat-students">0</div>
+                  <div class="stat-label">Учеников в базе класса</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-num tabular-nums" id="stat-passed">0</div>
+                  <div class="stat-label">Прошли тестирование</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-num mono-code" id="stat-code">—</div>
+                  <div class="stat-label">Код класса для входа</div>
+                </div>
+              </div>
+            </div>
+
+            <article class="card" id="class-profile-card">
+              <h2 class="editorial-title-sm">Сводный «Профиль класса» (средние по прошедшим тест)</h2>
+              <div id="class-profile-content"></div>
+            </article>
+
+            <article class="card">
+              <div class="flex-between" style="margin-bottom: 14px;">
+                <h2 class="editorial-title-sm" style="margin: 0;">База тестируемых класса</h2>
+                <button
+                  type="button"
+                  class="btn-secondary btn-sm"
+                  onclick="document.getElementById('bulk-add-box').classList.toggle('hidden')"
+                >
+                  <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M8 3.5V12.5M3.5 8H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                  <span>Добавить учеников списком</span>
+                </button>
+              </div>
+
+              <div id="bulk-add-box" class="bulk-box hidden">
+                <label class="field-label" for="bulkNames">
+                  Введите имена или коды учеников (каждого с новой строки) для генерации персональных ссылок:
+                </label>
+                <textarea id="bulkNames" rows="4" placeholder="Айдана С.&#10;Ернур К.&#10;Мария В."></textarea>
+                <div class="btn-row" style="margin-top: 10px;">
+                  <button type="button" class="btn-primary btn-sm" onclick="addStudentsBulk()">Сохранить в базу класса</button>
+                  <button
+                    type="button"
+                    class="btn-ghost btn-sm"
+                    onclick="document.getElementById('bulk-add-box').classList.add('hidden')"
+                  >
+                    Отмена
+                  </button>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="res-table">
+                  <thead>
+                    <tr>
+                      <th>Ученик</th>
+                      <th>Персональная ссылка</th>
+                      <th>Дата последнего теста</th>
+                      <th>Краткий профиль (E / A / C / N / O)</th>
+                      <th>Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody id="students-table-body"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <!-- ЭКРАН РЕЗУЛЬТАТОВ И 5 ТАБЛИЦ -->
+      <section id="screen-results" class="hidden animate-in" aria-label="Результаты диагностики">
+        <div id="save-status-banner" class="alert hidden no-print" role="status" aria-live="polite"></div>
+
+        <div class="card no-print flex-between">
+          <div>
+            <span class="section-kicker">Диагностический отчёт</span>
+            <h2 class="editorial-title-sm" style="margin: 2px 0 4px;">Результаты диагностики и план сопровождения</h2>
+            <div class="hint" id="result-meta-line"></div>
+            <div id="attempt-switcher-wrap" class="hidden attempt-row">
+              <label for="attempt-switcher" class="attempt-label">Замер (динамика):</label>
+              <select id="attempt-switcher" class="attempt-select" onchange="switchStudentAttempt(this.value)"></select>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" class="btn-secondary btn-sm hidden" id="btn-back-to-dash" onclick="backToDashboard()">
+              <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M10 12.5L5.5 8L10 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>Назад в кабинет</span>
+            </button>
+            <button type="button" class="btn-primary btn-sm hidden" id="btn-save-plan" onclick="saveCurrentPlanToDb()">
+              <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>Сохранить правки плана в БД</span>
+            </button>
+            <button type="button" class="btn-secondary btn-sm" onclick="window.print()">
+              <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4.5 5.5V2.5H11.5V5.5M4.5 11.5H3C2.45 11.5 2 11.05 2 10.5V7C2 6.45 2.45 6 3 6H13C13.55 6 14 6.45 14 7V10.5C14 11.05 13.55 11.5 13 11.5H11.5M4.5 9.5H11.5V13.5H4.5V9.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>Печать / PDF</span>
+            </button>
+            <button type="button" class="btn-primary btn-sm" onclick="exportToDocx()">
+              <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 2.5V10.5M8 10.5L5 7.5M8 10.5L11 7.5M3 13.5H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>Скачать (.docx)</span>
+            </button>
+            <button type="button" class="btn-secondary btn-sm" id="btn-retake" onclick="resetToStart()">
+              Пройти заново
+            </button>
+          </div>
         </div>
 
-        <div id="selected-class-panel" class="hidden">
-          <div class="card">
-            <div class="flex-between">
-              <div>
-                <h2 style="margin: 0 0 4px;" id="sel-class-title">Класс</h2>
-                <div class="muted-text" id="sel-class-meta"></div>
-              </div>
-              <div class="btn-row" style="margin: 0;">
-                <button class="btn-outline btn-sm" onclick="copyClassLink()">Копировать ссылку для учеников</button>
-                <button class="btn-secondary btn-sm" id="btn-toggle-class" onclick="toggleSelectedClass()">Закрыть приём ответов</button>
-                <button class="btn-success btn-sm" onclick="exportClassProfileDocx()">Скачать «Профиль класса» (.docx)</button>
-              </div>
-            </div>
+        <div id="exportable-report">
+          <article class="card">
+            <h2 class="editorial-title-sm">Визуальный профиль по модели Big Five</h2>
+            <div id="chart-meta" class="muted-text" style="margin-bottom: 18px;"></div>
+            <div id="factor-bars" class="factor-bars"></div>
+          </article>
 
-            <div class="grid-3" style="margin-top: 14px;">
-              <div class="stat-box">
-                <div class="stat-num" id="stat-students">0</div>
-                <div class="stat-label">Учеников в базе класса</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-num" id="stat-passed">0</div>
-                <div class="stat-label">Прошли тестирование</div>
-              </div>
-              <div class="stat-box">
-                <div class="stat-num"><code class="code-pill" id="stat-code">—</code></div>
-                <div class="stat-label">Код класса для входа</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card" id="class-profile-card">
-            <h2>Сводный «Профиль класса» (средние по прошедшим тест)</h2>
-            <div id="class-profile-content"></div>
-          </div>
-
-          <div class="card">
-            <div class="flex-between" style="margin-bottom: 12px;">
-              <h2 style="margin: 0;">База тестируемых класса</h2>
-              <button class="btn-outline btn-sm" onclick="document.getElementById('bulk-add-box').classList.toggle('hidden')">+ Добавить учеников списком</button>
-            </div>
-
-            <div id="bulk-add-box" class="alert alert-info hidden">
-              <label class="field-label" for="bulkNames">Введите имена/коды учеников (каждого с новой строки), чтобы получить персональные ссылки:</label>
-              <textarea id="bulkNames" rows="4" placeholder="Айдана С.&#10;Ернур К.&#10;Мария В."></textarea>
-              <div class="btn-row" style="margin-top: 8px;">
-                <button class="btn-primary btn-sm" onclick="addStudentsBulk()">Сохранить в базу класса</button>
-              </div>
-            </div>
-
+          <article class="card">
+            <h2 class="editorial-title-sm">Таблица 1. Сводные результаты по модели Big Five</h2>
             <div class="table-wrap">
-              <table class="res-table">
+              <table class="res-table" id="table-1">
                 <thead>
                   <tr>
-                    <th>Ученик</th>
-                    <th>Персональная ссылка</th>
-                    <th>Дата последнего теста</th>
-                    <th>Краткий профиль (E / A / C / N / O)</th>
-                    <th>Действия</th>
+                    <th style="width: 17%;">Фактор</th>
+                    <th style="width: 14%;">Показатель</th>
+                    <th style="width: 27%;">Ключевые аспекты (фасеты)</th>
+                    <th style="width: 21%;">Сильные проявления</th>
+                    <th style="width: 21%;">Замеченные трудности / риски</th>
                   </tr>
                 </thead>
-                <tbody id="students-table-body"></tbody>
+                <tbody id="table-1-body"></tbody>
               </table>
             </div>
-          </div>
+          </article>
+
+          <article class="card">
+            <div class="flex-between">
+              <h2 class="editorial-title-sm" style="margin: 0;">Таблица 2. ТОП-3 сильных качества и ТОП-3 зоны риска</h2>
+              <span class="hint no-print" style="margin: 0;">Ячейки доступны для редактирования</span>
+            </div>
+            <div class="table-wrap">
+              <table class="res-table" id="table-2">
+                <thead>
+                  <tr>
+                    <th style="width: 50%;">Сильные качества</th>
+                    <th style="width: 50%;">Зоны риска</th>
+                  </tr>
+                </thead>
+                <tbody id="table-2-body"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="flex-between">
+              <h2 class="editorial-title-sm" style="margin: 0;">Таблица 3. Гипотезы о влиянии особенностей на учебную деятельность</h2>
+              <span class="hint no-print" style="margin: 0;">Ячейки доступны для редактирования</span>
+            </div>
+            <div class="table-wrap">
+              <table class="res-table" id="table-3">
+                <thead>
+                  <tr>
+                    <th style="width: 22%;">Компонент школьной жизни</th>
+                    <th style="width: 39%;">Потенциальные плюсы / возможности</th>
+                    <th style="width: 39%;">Потенциальные риски / барьеры</th>
+                  </tr>
+                </thead>
+                <tbody id="table-3-body"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <h2 class="editorial-title-sm">Таблица 4. Матрица стратегий 5Ф (рекомендации под профиль)</h2>
+            <div class="table-wrap">
+              <table class="res-table" id="table-4">
+                <thead>
+                  <tr>
+                    <th style="width: 22%;">Фактор и уровень</th>
+                    <th style="width: 39%;">Если ВЫСОКО</th>
+                    <th style="width: 39%;">Если НИЗКО</th>
+                  </tr>
+                </thead>
+                <tbody id="table-4-body"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="flex-between">
+              <h2 class="editorial-title-sm" style="margin: 0;">Таблица 5. Индивидуальный план сопровождения</h2>
+              <span class="hint no-print" style="margin: 0;">Все ячейки редактируемы · после правок сохраните в БД или выгрузите .docx</span>
+            </div>
+            <div class="table-wrap">
+              <table class="res-table" id="table-5">
+                <thead>
+                  <tr>
+                    <th>Цель</th>
+                    <th>Стратегии / приёмы</th>
+                    <th>Инструменты оценивания</th>
+                    <th>Формат работы</th>
+                    <th>Ответственные</th>
+                    <th>Сроки / этапы</th>
+                  </tr>
+                </thead>
+                <tbody id="table-5-body"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <h2 class="editorial-title-sm">Черновик мини-презентации профиля (3–5 минут)</h2>
+            <ol class="pres-list" id="presentation-summary"></ol>
+          </article>
+
+          <aside class="ethical-box">
+            <strong>Этическая ремарка:</strong> результаты теста — не ярлык и не приговор; используем их как гипотезы для педагогических решений и наблюдаем динамику.
+          </aside>
         </div>
       </section>
-    </div>
-
-    <!-- ЭКРАН РЕЗУЛЬТАТОВ И 5 ТАБЛИЦ -->
-    <section id="screen-results" class="hidden">
-      <div id="save-status-banner" class="alert hidden no-print"></div>
-
-      <div class="card no-print flex-between">
-        <div>
-          <h2 style="margin:0;">Результаты диагностики и план сопровождения</h2>
-          <div class="hint" id="result-meta-line"></div>
-          <div id="attempt-switcher-wrap" class="hidden attempt-row">
-            <span style="font-size:0.85rem; font-weight:600;">Замер (динамика):</span>
-            <select id="attempt-switcher" class="attempt-select" onchange="switchStudentAttempt(this.value)"></select>
-          </div>
-        </div>
-        <div class="btn-row" style="margin:0;">
-          <button class="btn-secondary hidden" id="btn-back-to-dash" onclick="backToDashboard()">← Назад в кабинет</button>
-          <button class="btn-primary hidden" id="btn-save-plan" onclick="saveCurrentPlanToDb()">Сохранить правки плана в БД</button>
-          <button class="btn-outline" onclick="window.print()">Печать / PDF</button>
-          <button class="btn-success" onclick="exportToDocx()">Скачать таблицы (.docx)</button>
-          <button class="btn-secondary" id="btn-retake" onclick="resetToStart()">Пройти заново</button>
-        </div>
-      </div>
-
-      <div id="exportable-report">
-        <div class="card">
-          <h2>Визуальный профиль по модели Big Five</h2>
-          <div id="chart-meta" class="muted-text" style="margin-bottom: 12px;"></div>
-          <div id="factor-bars" class="factor-bars"></div>
-        </div>
-
-        <div class="card">
-          <h2>Таблица 1. Сводные результаты по модели Big Five</h2>
-          <div class="table-wrap">
-            <table class="res-table" id="table-1">
-              <thead>
-                <tr>
-                  <th style="width: 17%;">Фактор</th>
-                  <th style="width: 14%;">Показатель</th>
-                  <th style="width: 27%;">Ключевые аспекты (фасеты)</th>
-                  <th style="width: 21%;">Сильные проявления</th>
-                  <th style="width: 21%;">Замеченные трудности / риски</th>
-                </tr>
-              </thead>
-              <tbody id="table-1-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Таблица 2. ТОП-3 сильных качества и ТОП-3 зоны риска</h2>
-          <p class="hint no-print">Можно редактировать кликом по тексту (и сохранять в базу в кабинете педагога).</p>
-          <div class="table-wrap">
-            <table class="res-table" id="table-2">
-              <thead>
-                <tr>
-                  <th style="width: 50%;">Сильные качества</th>
-                  <th style="width: 50%;">Зоны риска</th>
-                </tr>
-              </thead>
-              <tbody id="table-2-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Таблица 3. Гипотезы о влиянии особенностей на учебную деятельность</h2>
-          <div class="table-wrap">
-            <table class="res-table" id="table-3">
-              <thead>
-                <tr>
-                  <th style="width: 22%;">Компонент школьной жизни</th>
-                  <th style="width: 39%;">Потенциальные плюсы / возможности</th>
-                  <th style="width: 39%;">Потенциальные риски / барьеры</th>
-                </tr>
-              </thead>
-              <tbody id="table-3-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Таблица 4. Матрица стратегий 5Ф (рекомендации под профиль)</h2>
-          <div class="table-wrap">
-            <table class="res-table" id="table-4">
-              <thead>
-                <tr>
-                  <th style="width: 20%;">Фактор и уровень</th>
-                  <th style="width: 40%;">Если ВЫСОКО</th>
-                  <th style="width: 40%;">Если НИЗКО</th>
-                </tr>
-              </thead>
-              <tbody id="table-4-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Таблица 5. Индивидуальный план сопровождения</h2>
-          <p class="hint no-print">Все ячейки редактируемые. После правок нажмите «Сохранить правки плана в БД» или «Скачать таблицы (.docx)».</p>
-          <div class="table-wrap">
-            <table class="res-table" id="table-5">
-              <thead>
-                <tr>
-                  <th>Цель</th>
-                  <th>Стратегии / приёмы</th>
-                  <th>Инструменты оценивания</th>
-                  <th>Формат работы</th>
-                  <th>Ответственные</th>
-                  <th>Сроки / этапы</th>
-                </tr>
-              </thead>
-              <tbody id="table-5-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Черновик мини-презентации профиля (3–5 минут)</h2>
-          <ol class="pres-list" id="presentation-summary"></ol>
-        </div>
-
-        <div class="ethical-box">
-          <strong>Этическая ремарка:</strong> результаты теста — не ярлык и не приговор; используем их как гипотезы для педагогических решений и наблюдаем динамику.
-        </div>
-      </div>
-    </section>
+    </main>
   </div>
+
+  <div id="toast-region" class="toast-region no-print" role="status" aria-live="polite"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
