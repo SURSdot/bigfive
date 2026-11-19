@@ -435,22 +435,6 @@ function fillCurrentPageRandom() {
   renderPage();
 }
 
-function runDemoProfile() {
-  if (!document.getElementById("userName").value.trim()) document.getElementById("userName").value = "Демо-профиль (Ученик)";
-  if (!document.getElementById("userGroup").value.trim()) document.getElementById("userGroup").value = "9 «А» класс";
-  viewingContext = { isTeacherView: false, studentId: null, resultId: null, studentName: "", className: "" };
-
-  activeQuestions = buildQuestions("full");
-  answers = {};
-  const targetBias = { E: 4.1, A: 3.1, C: 2.1, N: 3.7, O: 4.4 };
-  activeQuestions.forEach(q => {
-    const base = targetBias[q.factor] + (Math.random() * 1.4 - 0.7);
-    const clamped = Math.max(1, Math.min(5, Math.round(base)));
-    answers[q.id] = q.reverse ? (6 - clamped) : clamped;
-  });
-  renderResultsUI({ skipDbSave: true, isDemo: true });
-}
-
 async function finishTest() {
   if (!validateCurrentPage()) return;
   await renderResultsUI({ skipDbSave: false });
@@ -631,12 +615,6 @@ async function renderResultsUI({ skipDbSave = false, savedPlan = null, customDat
 
   const banner = document.getElementById("save-status-banner");
   banner.classList.add("hidden");
-
-  if (isDemo) {
-    banner.className = "alert alert-info no-print";
-    banner.textContent = "Демонстрационный профиль сформирован локально без записи в базу данных.";
-    banner.classList.remove("hidden");
-  }
 
   if (!skipDbSave && !viewingContext.isTeacherView) {
     const joinCode = urlInvite.classCode || document.getElementById("joinCode").value.trim().toUpperCase();
