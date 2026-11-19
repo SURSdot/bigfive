@@ -1060,6 +1060,99 @@ function copyStudentLink(token, name) {
     .catch(() => showToast("error", "Не удалось скопировать ссылку в буфер обмена."));
 }
 
+let activeQrInstance = null;
+let activeQrClassCode = "";
+
+function buildClassQrSvg(qr) {
+  const count = qr.getModuleCount();
+  const quiet = 2;
+  const total = count + quiet * 2;
+  const paths = [];
+
+  for (let r = 0; r < count; r++) {
+    for (let c = 0; c < count; c++) {
+      if (qr.isDark(r, c)) {
+        paths.push(`M${c + quiet},${r + quiet}h1v1h-1z`);
+      }
+    }
+  }
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${total} ${total}" shape-rendering="crispEdges" role="img" aria-label="QR-код для входа в класс">
+    <rect width="${total}" height="${total}" fill="#FFFFFF"/>
+    <path d="${paths.join("")}" fill="#111111"/>
+  </svg>`;
+}
+
+function openClassQrModal() {
+  const cls = dashData?.classes?.find(c => c.id === selectedClassId);
+  if (!cls) return;
+
+  if (typeof window.qrcode !== "function") {
+    showToast("error", "Не удалось загрузить генератор QR-кодов. Проверьте подключение к интернету.");
+    return;
+  }
+
+  const url = `${getBaseUrl()}?class=${encodeURIComponent(cls.join_code)}`;
+  window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs["UTF-8"];
+  const qr = window.qrcode(0, "M");
+  qr.addData(url);
+  qr.make();
+
+  activeQrInstance = qr;
+  activeQrClassCode = cls.join_code;
+
+  document.getElementById("qr-modal-code").textContent = `Код: ${cls.join_code}`;
+  document.getElementById("qr-modal-title").textContent = `Класс: ${cls.name}`;
+  document.getElementById("qr-svg-wrap").innerHTML = buildClassQrSvg(qr);
+  document.getElementById("qr-modal-url").textContent = url;
+  document.getElementById("qr-modal").classList.remove("hidden");
+}
+
+function closeClassQrModal() {
+  const modal = document.getElementById("qr-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function downloadClassQrPng() {
+  if (!activeQrInstance) return;
+
+  const count = activeQrInstance.getModuleCount();
+  const quiet = 4;
+  const scale = 12;
+  const size = (count + quiet * 2) * scale;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = "#111111";
+
+  for (let r = 0; r < count; r++) {
+    for (let c = 0; c < count; c++) {
+      if (activeQrInstance.isDark(r, c)) {
+        ctx.fillRect((c + quiet) * scale, (r + quiet) * scale, scale, scale);
+      }
+    }
+  }
+
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = `QR_${activeQrClassCode || "class"}.png`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeClassQrModal();
+  }
+});
+
 function renderStudentsTable(students, resultsByStudent) {
   const tbody = document.getElementById("students-table-body");
   if (!students.length) {
