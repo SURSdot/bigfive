@@ -3,540 +3,240 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Тест Big Five — Профиль ученика и индивидуальный план (Ресурс 7.2 / 7.2.1)</title>
-  <style>
-    :root {
-      --bg: #f4f6fb;
-      --card: #ffffff;
-      --text: #1e293b;
-      --muted: #64748b;
-      --border: #dbe2ef;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-soft: #eff6ff;
-      --success: #15803d;
-      --success-bg: #dcfce7;
-      --warn: #b45309;
-      --warn-bg: #fef3c7;
-      --danger: #b91c1c;
-      --danger-bg: #fee2e2;
-      --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-      --radius: 14px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.55;
-    }
-
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 24px 16px 64px;
-    }
-
-    header.hero {
-      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-      color: #fff;
-      padding: 28px 32px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      margin-bottom: 24px;
-    }
-
-    header.hero h1 {
-      margin: 0 0 8px;
-      font-size: 1.65rem;
-      line-height: 1.25;
-    }
-
-    header.hero p {
-      margin: 0;
-      opacity: 0.92;
-      font-size: 0.98rem;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      margin-bottom: 22px;
-    }
-
-    .hidden { display: none !important; }
-
-    h2 {
-      margin: 0 0 12px;
-      font-size: 1.25rem;
-      color: #0f172a;
-    }
-
-    h3 {
-      margin: 0 0 10px;
-      font-size: 1.05rem;
-      color: #1e293b;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-    }
-
-    label.field-label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-      color: #334155;
-    }
-
-    input[type="text"], select {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 0.96rem;
-      color: var(--text);
-      background: #fff;
-    }
-
-    input[type="text"]:focus, select:focus {
-      outline: 2px solid rgba(37, 99, 235, 0.25);
-      border-color: var(--primary);
-    }
-
-    .mode-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 12px;
-      margin: 16px 0;
-    }
-
-    .mode-box {
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 16px;
-      cursor: pointer;
-      transition: 0.15s ease;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .mode-box.active {
-      border-color: var(--primary);
-      background: var(--primary-soft);
-    }
-
-    .mode-box input { margin-top: 4px; }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      margin-top: 16px;
-    }
-
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 11px 18px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.15s ease;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-    }
-    .btn-primary:hover { background: var(--primary-hover); }
-
-    .btn-secondary {
-      background: #e2e8f0;
-      color: #1e293b;
-    }
-    .btn-secondary:hover { background: #cbd5e1; }
-
-    .btn-outline {
-      background: #fff;
-      color: var(--primary);
-      border: 1px solid var(--primary);
-    }
-    .btn-outline:hover { background: var(--primary-soft); }
-
-    .btn-success {
-      background: #16a34a;
-      color: #fff;
-    }
-    .btn-success:hover { background: #15803d; }
-
-    /* Progress bar */
-    .progress-wrap {
-      position: sticky;
-      top: 10px;
-      z-index: 20;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(6px);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-    }
-
-    .progress-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #334155;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background: #e2e8f0;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #2563eb, #3b82f6);
-      transition: width 0.25s ease;
-    }
-
-    /* Question item */
-    .question-card {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 18px;
-      margin-bottom: 14px;
-      background: #fff;
-      transition: border-color 0.2s;
-    }
-
-    .question-card.unanswered-highlight {
-      border-color: #ef4444;
-      background: #fef2f2;
-    }
-
-    .q-title {
-      font-weight: 600;
-      margin-bottom: 12px;
-      font-size: 1rem;
-    }
-
-    .q-num {
-      display: inline-block;
-      min-width: 28px;
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .likert {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-
-    .likert label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 10px 6px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      color: #475569;
-      transition: 0.15s;
-      background: #f8fafc;
-    }
-
-    .likert input {
-      margin-bottom: 5px;
-      accent-color: var(--primary);
-      transform: scale(1.1);
-    }
-
-    .likert label:has(input:checked) {
-      background: var(--primary-soft);
-      border-color: var(--primary);
-      color: #1e3a8a;
-      font-weight: 600;
-    }
-
-    @media (max-width: 680px) {
-      .likert { grid-template-columns: 1fr; }
-      .likert label {
-        flex-direction: row;
-        justify-content: flex-start;
-        gap: 10px;
-        text-align: left;
-        padding: 9px 12px;
-      }
-      .likert input { margin-bottom: 0; }
-    }
-
-    /* Results & Charts */
-    .factor-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 10px;
-    }
-
-    .bar-row {
-      display: grid;
-      grid-template-columns: 220px 1fr 125px;
-      align-items: center;
-      gap: 12px;
-    }
-
-    @media (max-width: 680px) {
-      .bar-row { grid-template-columns: 1fr; gap: 6px; }
-    }
-
-    .bar-track {
-      height: 16px;
-      background: #e2e8f0;
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.5s ease;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    .badge-high { background: var(--success-bg); color: var(--success); }
-    .badge-mid { background: #e0f2fe; color: #0369a1; }
-    .badge-low { background: var(--warn-bg); color: var(--warn); }
-    .badge-risk { background: var(--danger-bg); color: var(--danger); }
-
-    /* Tables matching Resource 7.2.1 */
-    .table-wrap {
-      overflow-x: auto;
-      margin-top: 12px;
-    }
-
-    table.res-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-      background: #fff;
-    }
-
-    table.res-table th,
-    table.res-table td {
-      border: 1px solid #cbd5e1;
-      padding: 10px 12px;
-      vertical-align: top;
-      text-align: left;
-    }
-
-    table.res-table th {
-      background: #f1f5f9;
-      color: #0f172a;
-      font-weight: 700;
-    }
-
-    table.res-table tr:nth-child(even) td {
-      background: #fafcff;
-    }
-
-    .facet-list {
-      margin: 0;
-      padding-left: 16px;
-      font-size: 0.84rem;
-    }
-
-    .facet-list li { margin-bottom: 3px; }
-
-    .cell-active {
-      background: #eff6ff !important;
-      outline: 2px solid #3b82f6;
-      outline-offset: -2px;
-    }
-
-    [contenteditable="true"] {
-      background: #fffef5 !important;
-      border-bottom: 1px dashed #94a3b8;
-      padding: 4px 6px;
-      border-radius: 4px;
-    }
-
-    [contenteditable="true"]:focus {
-      outline: 2px solid rgba(37, 99, 235, 0.35);
-      background: #fff !important;
-    }
-
-    .hint {
-      font-size: 0.84rem;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    .ethical-box {
-      background: #f8fafc;
-      border-left: 4px solid var(--primary);
-      padding: 14px 16px;
-      border-radius: 8px;
-      font-size: 0.92rem;
-      color: #334155;
-    }
-
-    .pres-list {
-      padding-left: 20px;
-      margin: 8px 0 0;
-    }
-
-    .pres-list li { margin-bottom: 8px; }
-
-    .error-msg {
-      color: var(--danger);
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-top: 8px;
-    }
-
-    @media print {
-      body { background: #fff; }
-      header.hero { background: #1e3a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .no-print { display: none !important; }
-      .card { box-shadow: none; border: 1px solid #cbd5e1; break-inside: avoid; }
-      [contenteditable="true"] { background: #fff !important; border: none; }
-    }
-  </style>
+  <title>Big Five — Профиль ученика и класса</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <header class="hero">
-      <h1>Диагностика личности по модели Big Five («Большая пятёрка»)</h1>
-      <p>Интерактивное тестирование с автоматическим формированием итоговых таблиц (Ресурс 7.2 и Ресурс 7.2.1 «Профиль ученика – профиль класса»)</p>
+      <div>
+        <h1>Big Five — Профиль ученика и класса</h1>
+        <p>Тестирование по модели «Большой пятёрки» (Ресурс 7.2 / 7.2.1) с облачным хранением в Supabase</p>
+      </div>
+      <div class="nav-tabs no-print" id="main-nav">
+        <button class="nav-tab active" id="tab-student" onclick="switchMode('student')">Пройти тест</button>
+        <button class="nav-tab" id="tab-teacher" onclick="switchMode('teacher')">Кабинет педагога / психолога</button>
+      </div>
     </header>
 
-    <!-- START SCREEN -->
-    <section id="screen-start" class="card">
-      <h2>Подготовка к тестированию</h2>
-      <p style="color: var(--muted); margin-top: 0;">
-        Опросник оценивает 5 базовых факторов личности и 29 ключевых аспектов (фасетов) по модели IPIP-NEO.
-        Отвечайте искренне: низкие, средние и высокие значения не являются «плохими» или «хорошими» — они отражают индивидуальный стиль поведения и обучения.
-      </p>
+    <div id="config-warning" class="alert alert-warn hidden no-print">
+      <strong>Режим без облачной БД:</strong> в файле <code>app.js</code> не указаны <code>URL</code> и <code>ANON_KEY</code> из Supabase. Тест и выгрузка в <code>.docx</code> работают локально, а для входа педагога заполните настройки Supabase.
+    </div>
 
-      <div class="grid-2" style="margin-top: 14px;">
-        <div>
-          <label class="field-label" for="userName">Имя / ФИО (ученика или тестируемого)</label>
-          <input type="text" id="userName" placeholder="Например: Айдана С. (или оставьте пустым)" />
-        </div>
-        <div>
-          <label class="field-label" for="userGroup">Класс / группа / дата</label>
-          <input type="text" id="userGroup" placeholder="Например: 9 «А» класс" />
-        </div>
-      </div>
+    <!-- БЛОК ТЕСТИРУЕМОГО -->
+    <div id="section-student">
+      <section id="screen-start" class="card">
+        <h2>Подготовка к тестированию</h2>
+        <div id="invite-banner" class="alert alert-info hidden"></div>
 
-      <h3 style="margin-top: 20px;">Выберите формат теста</h3>
-      <div class="mode-options">
-        <label class="mode-box active" id="mode-full-box">
-          <input type="radio" name="testMode" value="full" checked />
-          <div>
-            <strong>Полный тест (58 утверждений)</strong>
-            <div style="font-size: 0.85rem; color: var(--muted);">По 2 вопроса (прямой и обратный) на каждый из 29 аспектов. Время: ~6–8 минут.</div>
+        <div class="grid-3" style="margin-top: 12px;">
+          <div id="join-code-wrap">
+            <label class="field-label" for="joinCode">Код класса (выдаёт педагог)</label>
+            <input type="text" id="joinCode" placeholder="Например: CL-4821 (или пусто)" />
           </div>
-        </label>
-        <label class="mode-box" id="mode-express-box">
-          <input type="radio" name="testMode" value="express" />
-          <div>
-            <strong>Экспресс-тест (29 утверждений)</strong>
-            <div style="font-size: 0.85rem; color: var(--muted);">По 1 ключевому вопросу на каждый аспект. Время: ~3 минуты.</div>
+          <div id="user-name-wrap">
+            <label class="field-label" for="userName">Имя / ФИО (или код ученика)</label>
+            <input type="text" id="userName" placeholder="Например: Айдана С." />
           </div>
-        </label>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn-primary" onclick="startTest()">Начать тестирование</button>
-        <button class="btn-outline" onclick="runDemoProfile()">Демо-заполнение (показать пример таблиц)</button>
-      </div>
-    </section>
-
-    <!-- TEST SCREEN -->
-    <section id="screen-test" class="hidden">
-      <div class="progress-wrap no-print">
-        <div class="progress-meta">
-          <span id="progress-text">Отвечено: 0 из 58</span>
-          <span id="page-text">Страница 1 из 6</span>
+          <div id="user-group-wrap">
+            <label class="field-label" for="userGroup">Класс / заметка (необязательно)</label>
+            <input type="text" id="userGroup" placeholder="Например: 9 «А» класс" />
+          </div>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progress-fill"></div>
+
+        <h3 style="margin-top: 18px;">Выберите формат теста</h3>
+        <div class="mode-options">
+          <label class="mode-box active" id="mode-full-box">
+            <input type="radio" name="testMode" value="full" checked />
+            <div>
+              <strong>Полный тест (58 утверждений)</strong>
+              <div class="mode-sub">По 2 вопроса на каждый из 29 аспектов. ~6–8 минут.</div>
+            </div>
+          </label>
+          <label class="mode-box" id="mode-express-box">
+            <input type="radio" name="testMode" value="express" />
+            <div>
+              <strong>Экспресс-тест (29 утверждений)</strong>
+              <div class="mode-sub">По 1 вопросу на каждый аспект. ~3 минуты.</div>
+            </div>
+          </label>
         </div>
-      </div>
 
-      <div id="questions-container"></div>
-      <div id="test-error" class="error-msg hidden"></div>
-
-      <div class="card btn-row" style="justify-content: space-between;">
-        <button class="btn-secondary" id="btn-prev" onclick="prevPage()">← Назад</button>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button class="btn-outline" onclick="fillCurrentPageRandom()">Автозаполнить страницу</button>
-          <button class="btn-primary" id="btn-next" onclick="nextPage()">Далее →</button>
-          <button class="btn-success hidden" id="btn-finish" onclick="finishTest()">Завершить и получить таблицы ✓</button>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="startTest()">Начать тестирование</button>
+          <button class="btn-outline" onclick="runDemoProfile()">Демо-заполнение (пример таблиц)</button>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- RESULTS SCREEN -->
+      <section id="screen-test" class="hidden">
+        <div class="progress-wrap no-print">
+          <div class="progress-meta">
+            <span id="progress-text">Отвечено: 0 из 58</span>
+            <span id="page-text">Страница 1 из 6</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+
+        <div id="questions-container"></div>
+        <div id="test-error" class="alert alert-danger hidden"></div>
+
+        <div class="card btn-row" style="justify-content: space-between;">
+          <button class="btn-secondary" id="btn-prev" onclick="prevPage()">← Назад</button>
+          <div class="btn-group">
+            <button class="btn-outline" onclick="fillCurrentPageRandom()">Автозаполнить страницу</button>
+            <button class="btn-primary" id="btn-next" onclick="nextPage()">Далее →</button>
+            <button class="btn-success hidden" id="btn-finish" onclick="finishTest()">Завершить и получить таблицы ✓</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- КАБИНЕТ ПЕДАГОГА / ПСИХОЛОГА -->
+    <div id="section-teacher" class="hidden">
+      <section id="teacher-login-card" class="card login-box">
+        <h2>Вход для педагогов и психологов</h2>
+        <p class="hint" style="margin-bottom: 14px;">
+          Самостоятельная регистрация отключена. Используйте имя пользователя и пароль, созданные администратором в базе данных.
+        </p>
+        <div class="form-group">
+          <label class="field-label" for="loginUsername">Имя пользователя</label>
+          <input type="text" id="loginUsername" placeholder="Например: teacher1" />
+        </div>
+        <div class="form-group">
+          <label class="field-label" for="loginPassword">Пароль</label>
+          <input type="password" id="loginPassword" placeholder="Введите пароль" onkeydown="if(event.key==='Enter') handleTeacherLogin()" />
+        </div>
+        <div id="login-error" class="alert alert-danger hidden"></div>
+        <button class="btn-primary" style="width: 100%;" onclick="handleTeacherLogin()">Войти в кабинет</button>
+      </section>
+
+      <section id="teacher-dashboard" class="hidden">
+        <div class="card flex-between">
+          <div>
+            <h2 style="margin: 0 0 4px;" id="dash-welcome">Кабинет</h2>
+            <div id="dash-role-line" class="muted-text"></div>
+          </div>
+          <div class="btn-row" style="margin: 0;">
+            <button class="btn-outline btn-sm" onclick="loadDashboard()">↻ Обновить данные</button>
+            <button class="btn-secondary btn-sm" onclick="handleTeacherLogout()">Выйти</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="flex-between" style="align-items: flex-end;">
+            <div style="flex: 1; min-width: 240px;">
+              <h3 style="margin-bottom: 6px;">Классы и группы</h3>
+              <p class="hint" style="margin: 0;" id="classes-scope-hint"></p>
+            </div>
+            <div class="btn-group">
+              <input type="text" id="newClassName" placeholder="Новый класс (напр. 9 «А»)" style="width: 210px;" />
+              <button class="btn-primary" onclick="createNewClass()">+ Создать класс</button>
+            </div>
+          </div>
+
+          <div class="class-pills" id="class-pills"></div>
+          <div id="class-empty-hint" class="hint hidden">Пока нет ни одного класса. Создайте первый класс справа.</div>
+        </div>
+
+        <div id="selected-class-panel" class="hidden">
+          <div class="card">
+            <div class="flex-between">
+              <div>
+                <h2 style="margin: 0 0 4px;" id="sel-class-title">Класс</h2>
+                <div class="muted-text" id="sel-class-meta"></div>
+              </div>
+              <div class="btn-row" style="margin: 0;">
+                <button class="btn-outline btn-sm" onclick="copyClassLink()">Копировать ссылку для учеников</button>
+                <button class="btn-secondary btn-sm" id="btn-toggle-class" onclick="toggleSelectedClass()">Закрыть приём ответов</button>
+                <button class="btn-success btn-sm" onclick="exportClassProfileDocx()">Скачать «Профиль класса» (.docx)</button>
+              </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: 14px;">
+              <div class="stat-box">
+                <div class="stat-num" id="stat-students">0</div>
+                <div class="stat-label">Учеников в базе класса</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-num" id="stat-passed">0</div>
+                <div class="stat-label">Прошли тестирование</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-num"><code class="code-pill" id="stat-code">—</code></div>
+                <div class="stat-label">Код класса для входа</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="class-profile-card">
+            <h2>Сводный «Профиль класса» (средние по прошедшим тест)</h2>
+            <div id="class-profile-content"></div>
+          </div>
+
+          <div class="card">
+            <div class="flex-between" style="margin-bottom: 12px;">
+              <h2 style="margin: 0;">База тестируемых класса</h2>
+              <button class="btn-outline btn-sm" onclick="document.getElementById('bulk-add-box').classList.toggle('hidden')">+ Добавить учеников списком</button>
+            </div>
+
+            <div id="bulk-add-box" class="alert alert-info hidden">
+              <label class="field-label" for="bulkNames">Введите имена/коды учеников (каждого с новой строки), чтобы получить персональные ссылки:</label>
+              <textarea id="bulkNames" rows="4" placeholder="Айдана С.&#10;Ернур К.&#10;Мария В."></textarea>
+              <div class="btn-row" style="margin-top: 8px;">
+                <button class="btn-primary btn-sm" onclick="addStudentsBulk()">Сохранить в базу класса</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="res-table">
+                <thead>
+                  <tr>
+                    <th>Ученик</th>
+                    <th>Персональная ссылка</th>
+                    <th>Дата последнего теста</th>
+                    <th>Краткий профиль (E / A / C / N / O)</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody id="students-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ЭКРАН РЕЗУЛЬТАТОВ И 5 ТАБЛИЦ -->
     <section id="screen-results" class="hidden">
-      <div class="card no-print" style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px;">
+      <div id="save-status-banner" class="alert hidden no-print"></div>
+
+      <div class="card no-print flex-between">
         <div>
-          <h2 style="margin:0;">Результаты диагностики готовы</h2>
+          <h2 style="margin:0;">Результаты диагностики и план сопровождения</h2>
           <div class="hint" id="result-meta-line"></div>
+          <div id="attempt-switcher-wrap" class="hidden attempt-row">
+            <span style="font-size:0.85rem; font-weight:600;">Замер (динамика):</span>
+            <select id="attempt-switcher" class="attempt-select" onchange="switchStudentAttempt(this.value)"></select>
+          </div>
         </div>
         <div class="btn-row" style="margin:0;">
-          <button class="btn-primary" onclick="window.print()">Печать / PDF</button>
-          <button class="btn-success" onclick="exportToWord()">Скачать таблицы (.doc)</button>
-          <button class="btn-secondary" onclick="resetToStart()">Пройти заново</button>
+          <button class="btn-secondary hidden" id="btn-back-to-dash" onclick="backToDashboard()">← Назад в кабинет</button>
+          <button class="btn-primary hidden" id="btn-save-plan" onclick="saveCurrentPlanToDb()">Сохранить правки плана в БД</button>
+          <button class="btn-outline" onclick="window.print()">Печать / PDF</button>
+          <button class="btn-success" onclick="exportToDocx()">Скачать таблицы (.docx)</button>
+          <button class="btn-secondary" id="btn-retake" onclick="resetToStart()">Пройти заново</button>
         </div>
       </div>
 
       <div id="exportable-report">
-        <!-- VISUAL PROFILE -->
         <div class="card">
           <h2>Визуальный профиль по модели Big Five</h2>
-          <div id="chart-meta" style="color: var(--muted); font-size: 0.92rem; margin-bottom: 12px;"></div>
+          <div id="chart-meta" class="muted-text" style="margin-bottom: 12px;"></div>
           <div id="factor-bars" class="factor-bars"></div>
         </div>
 
-        <!-- TABLE 1 -->
         <div class="card">
           <h2>Таблица 1. Сводные результаты по модели Big Five</h2>
-          <p class="hint">Сформировано автоматически на основе ваших ответов по факторам и 29 фасетам (Ресурс 7.2).</p>
           <div class="table-wrap">
             <table class="res-table" id="table-1">
               <thead>
@@ -553,10 +253,9 @@
           </div>
         </div>
 
-        <!-- TABLE 2 -->
         <div class="card">
           <h2>Таблица 2. ТОП-3 сильных качества и ТОП-3 зоны риска</h2>
-          <p class="hint no-print">Автоматически выделены на основе крайних значений фасетов и факторов. Вы можете кликнуть по тексту и отредактировать формулировки перед экспортом.</p>
+          <p class="hint no-print">Можно редактировать кликом по тексту (и сохранять в базу в кабинете педагога).</p>
           <div class="table-wrap">
             <table class="res-table" id="table-2">
               <thead>
@@ -570,7 +269,6 @@
           </div>
         </div>
 
-        <!-- TABLE 3 -->
         <div class="card">
           <h2>Таблица 3. Гипотезы о влиянии особенностей на учебную деятельность</h2>
           <div class="table-wrap">
@@ -587,15 +285,13 @@
           </div>
         </div>
 
-        <!-- TABLE 4 -->
         <div class="card">
-          <h2>Таблица 4. Матрица стратегий 5Ф (рекомендации под ваш профиль)</h2>
-          <p class="hint">Синей рамкой выделены рекомендации из Матрицы 5Ф (Ресурс 7.2.1), соответствующие полученному уровню фактора. При среднем показателе можно комбинировать оба столбца.</p>
+          <h2>Таблица 4. Матрица стратегий 5Ф (рекомендации под профиль)</h2>
           <div class="table-wrap">
             <table class="res-table" id="table-4">
               <thead>
                 <tr>
-                  <th style="width: 20%;">Фактор и ваш уровень</th>
+                  <th style="width: 20%;">Фактор и уровень</th>
                   <th style="width: 40%;">Если ВЫСОКО</th>
                   <th style="width: 40%;">Если НИЗКО</th>
                 </tr>
@@ -605,10 +301,9 @@
           </div>
         </div>
 
-        <!-- TABLE 5 -->
         <div class="card">
           <h2>Таблица 5. Индивидуальный план сопровождения</h2>
-          <p class="hint no-print">Черновик плана сформирован автоматически с опорой на стратегии из Матрицы 5Ф, инструменты оценивания и форматы работы (Ресурс 7.2.1). Все ячейки можно редактировать.</p>
+          <p class="hint no-print">Все ячейки редактируемые. После правок нажмите «Сохранить правки плана в БД» или «Скачать таблицы (.docx)».</p>
           <div class="table-wrap">
             <table class="res-table" id="table-5">
               <thead>
@@ -626,7 +321,6 @@
           </div>
         </div>
 
-        <!-- PRESENTATION TEMPLATE -->
         <div class="card">
           <h2>Черновик мини-презентации профиля (3–5 минут)</h2>
           <ol class="pres-list" id="presentation-summary"></ol>
@@ -639,682 +333,7 @@
     </section>
   </div>
 
-  <script>
-    // =========================================================
-    // 1. DATA: FACTORS, FACETS (per Resource 7.2), STRATEGIES (per Resource 7.2.1)
-    // =========================================================
-    const FACTORS = [
-      {
-        id: "E",
-        name: "Экстраверсия",
-        en: "Extraversion",
-        color: "#2563eb",
-        highManifest: "Инициативность, энергичность, быстрая адаптация в коллективе, готовность выступать и вести за собой группу, позитивный эмоциональный фон.",
-        midManifest: "Гибкое переключение между командным взаимодействием и самостоятельной работой в спокойной обстановке.",
-        lowManifest: "Сдержанность, глубина размышлений, умение сосредоточенно работать в тишине и индивидуальном формате без лишней суеты.",
-        highRisk: "Может перебивать других, стремиться занять всё «эфирное время», скучать при монотонной индивидуальной работе, искать излишней стимуляции.",
-        midRisk: "В чрезмерно шумной или слишком изолированной обстановке продуктивность может умеренно снижаться.",
-        lowRisk: "Утомление от больших групп и частых выступлений; сдержанность окружающие могут ошибочно принимать за холодность или закрытость.",
-        matrixHigh: "Давать роли фасилитатора / спикера; задания с обменом идеями; правила баланса эфирного времени; проектная работа с распределением ответственности; целенаправленно развивать активное слушание.",
-        matrixLow: "Предлагать парную работу, письменные ответы перед устными; предварительные сценарии выступлений; асинхронные формы участия (форумы, заметки); постепенно расширять социальные ситуации."
-      },
-      {
-        id: "A",
-        name: "Доброжелательность",
-        en: "Agreeableness",
-        color: "#16a34a",
-        highManifest: "Чуткость, стремление к гармонии, искренность, готовность помогать и сотрудничать, дипломатичность и доверие к людям.",
-        midManifest: "Умение сочетать доброжелательное сотрудничество со способностью спокойно отстаивать собственные интересы.",
-        lowManifest: "Независимость суждений, объективность, критическое мышление, готовность говорить правду без прикрас и отстаивать позицию.",
-        highRisk: "Трудности в ситуациях, требующих жёсткой объективности, критики или отказа; риск уступать в ущерб собственным границам.",
-        midRisk: "Иногда возможны колебания между стремлением угодить и желанием проявить твёрдость.",
-        lowRisk: "Скептицизм и прямолинейность могут провоцировать трения в группе, трудности в поиске компромиссов и отказ от командного взаимодействия.",
-        matrixHigh: "Использовать кооперативные структуры (Jigsaw, Peer-tutoring); поручать медиаторские роли; прозрачные критерии справедливости; тренинги «Я-сообщений».",
-        matrixLow: "Учить конструктивной конфронтации и аргументации; контракты поведения; ролевые игры по разрешению конфликтов; чёткие границы и правила «стоп-сигналов»."
-      },
-      {
-        id: "C",
-        name: "Добросовестность",
-        en: "Conscientiousness",
-        color: "#0891b2",
-        highManifest: "Организованность, планирование, самодисциплина, настойчивость, надёжность, обдуманность решений и стремление к высокому результату.",
-        midManifest: "Разумный баланс между соблюдением планов и способностью действовать гибко при изменении обстоятельств.",
-        lowManifest: "Спонтанность, гибкость, способность быстро реагировать в нестандартных игровых или ограниченных по времени ситуациях.",
-        highRisk: "Склонность к перфекционизму и перегрузкам, тревога при нарушении привычного порядка или нечётких правилах.",
-        midRisk: "При потере интереса к задаче или отсутствии чётких ориентиров возможна прокрастинация.",
-        lowRisk: "Импульсивность, откладывание дел, пропуск дедлайнов, сложности с многоэтапными проектами и соблюдением жёстких инструкций.",
-        matrixHigh: "Сложные, долгосрочные задачи с вехами; лидерство в планировании; чек-листы качества; баланс «перфекционизм vs достаточно хорошо».",
-        matrixLow: "Разбивка на шаги (chunking), визуальные распорядки, тайм-менеджмент по Помодоро, ежедневные мини-цели, напоминания; обучение само-мониторингу и рефлексии."
-      },
-      {
-        id: "N",
-        name: "Нейротизм (эмоциональная реактивность)",
-        en: "Neuroticism",
-        color: "#d97706",
-        highManifest: "Тонкая чувствительность к деталям обстановки и несправедливости, эмоциональная вовлечённость и осторожность в оценке угроз.",
-        midManifest: "Умеренная эмоциональная чувствительность: обычные учебные трудности переживаются без длительной потери равновесия.",
-        lowManifest: "Высокая эмоциональная стабильность, спокойствие под давлением, стрессоустойчивость и ясность ума в напряжённых ситуациях.",
-        highRisk: "Высокая тревожность, уязвимость к критике и стрессу, быстрое эмоциональное выгорание, вспышки раздражения или неуверенность перед оценкой.",
-        midRisk: "В периоды высокой нагрузки (контрольные, публичные защиты) может возникать ситуативное волнение.",
-        lowRisk: "При очень низком нейротизме (высокой стабильности) возможна недооценка рисков и последствий, а также недостаток эмпатии к переживаниям более тревожных сверстников.",
-        matrixHigh: "Навыки эмоциональной регуляции (дыхание, «стоп-мысль»), рефрейминг; предсказуемые ритуалы урока; поддерживающая обратная связь; постепенное повышение требований.",
-        matrixLow: "Если низкий (высокая стабильность): давать челлендж-задачи, развивать эмпатию к переживаниям других; учить отслеживать риски и последствия."
-      },
-      {
-        id: "O",
-        name: "Открытость опыту",
-        en: "Openness to Experience",
-        color: "#7c3aed",
-        highManifest: "Любознательность, креативность, развитое воображение, интерес к идеям, искусству и нестандартным способам решения задач.",
-        midManifest: "Способность сочетать практический взгляд на задачи с интересом к новым идеям и творческим подходам.",
-        lowManifest: "Практичность, опора на проверенные факты и традиции, стабильность в действиях и чёткое следование понятным алгоритмам.",
-        highRisk: "Скука при рутинных тренировочных упражнениях, склонность оспаривать устоявшиеся правила и уходить в абстракции от практики.",
-        midRisk: "Слишком расплывчатые или чрезмерно однообразные задания снижают учебный интерес.",
-        lowRisk: "Дискомфорт от резких перемен, новых форматов и абстрактных заданий без чёткого практического образца.",
-        matrixHigh: "Творческие исследовательские задания, межпредметные проекты, выбор форматов продукта; метапознание: «как я пришёл к идее».",
-        matrixLow: "Алгоритмы и примеры; пошаговые инструкции; сначала надёжные шаблоны, затем вариации; поддержка при изменениях и новизне."
-      }
-    ];
-
-    // 29 facets from Resource 7.2 + 2 questions each (58 total)
-    const QUESTIONS_RAW = [
-      // E
-      { id: "q1", factor: "E", facet: "Дружелюбность", text: "Мне легко заводить новых друзей и открыто проявлять тёплые чувства к людям.", reverse: false },
-      { id: "q2", factor: "E", facet: "Дружелюбность", text: "В общении с незнакомыми людьми я обычно держусь отстранённо и сдержанно.", reverse: true },
-      { id: "q3", factor: "E", facet: "Общительность", text: "Я заряжаюсь энергией в больших компаниях и люблю находиться среди людей.", reverse: false },
-      { id: "q4", factor: "E", facet: "Общительность", text: "Шумные компании быстро утомляют меня, и мне нужно много личного пространства.", reverse: true },
-      { id: "q5", factor: "E", facet: "Самоуверенность", text: "В группе я часто беру ответственность на себя и направляю действия других.", reverse: false },
-      { id: "q6", factor: "E", facet: "Самоуверенность", text: "При совместной работе я предпочитаю молчать и позволять другим управлять процессом.", reverse: true },
-      { id: "q7", factor: "E", facet: "Активность", text: "Я предпочитаю быстрый, насыщенный темп и занимаюсь сразу многими видами деятельности.", reverse: false },
-      { id: "q8", factor: "E", facet: "Активность", text: "Мне комфортнее действовать в медленном, неторопливом и расслабленном темпе.", reverse: true },
-      { id: "q9", factor: "E", facet: "Поиск ярких ощущений", text: "Мне быстро становится скучно без ярких впечатлений, риска и динамичной обстановки.", reverse: false },
-      { id: "q10", factor: "E", facet: "Поиск ярких ощущений", text: "Я не люблю шум, суету и избегаю ситуаций с поиском острых ощущений.", reverse: true },
-      { id: "q11", factor: "E", facet: "Жизнерадостность", text: "Я часто испытываю широкий спектр позитивных чувств: радость, энтузиазм и оптимизм.", reverse: false },
-      { id: "q12", factor: "E", facet: "Жизнерадостность", text: "Я редко бываю в энергичном, восторженном и приподнятом настроении.", reverse: true },
-
-      // A
-      { id: "q13", factor: "A", facet: "Доверие", text: "Я верю, что большинство людей справедливы, честны и имеют добрые намерения.", reverse: false },
-      { id: "q14", factor: "A", facet: "Доверие", text: "Я склонен(на) считать, что многие люди хитры и преследуют лишь личную выгоду.", reverse: true },
-      { id: "q15", factor: "A", facet: "Моральность", text: "В делах с людьми я веду себя искренне и прямолинейно, не прибегая к манипуляциям.", reverse: false },
-      { id: "q16", factor: "A", facet: "Моральность", text: "Я считаю, что в социальных отношениях иногда необходимо притворяться или недоговаривать.", reverse: true },
-      { id: "q17", factor: "A", facet: "Альтруизм", text: "Помощь нуждающимся доставляет мне искреннее удовольствие и чувство самореализации.", reverse: false },
-      { id: "q18", factor: "A", facet: "Альтруизм", text: "Просьбы других людей о помощи чаще кажутся мне обузой, чем радостью.", reverse: true },
-      { id: "q19", factor: "A", facet: "Сотрудничество", text: "Я избегаю конфронтации и охотно иду на компромисс, чтобы ладить с окружающими.", reverse: false },
-      { id: "q20", factor: "A", facet: "Сотрудничество", text: "Чтобы добиться своего, я могу жёстко надавить и настоять на своей позиции.", reverse: true },
-      { id: "q21", factor: "A", facet: "Скромность", text: "Я не люблю хвастаться своими успехами и утверждать, что я лучше других.", reverse: false },
-      { id: "q22", factor: "A", facet: "Скромность", text: "Мне нравится публично подчёркивать своё превосходство и достижения.", reverse: true },
-      { id: "q23", factor: "A", facet: "Сочувствие", text: "Я мягкосердечный человек: остро чувствую чужую боль и легко сопереживаю.", reverse: false },
-      { id: "q24", factor: "A", facet: "Сочувствие", text: "При оценке ситуаций я опираюсь на холодный рассудок и беспристрастность, а не на жалость.", reverse: true },
-
-      // C
-      { id: "q25", factor: "C", facet: "Самоэффективность", text: "Я уверен(а), что обладаю самоконтролем и способностью доводить дела до конца.", reverse: false },
-      { id: "q26", factor: "C", facet: "Самоэффективность", text: "Мне часто кажется, что я не справляюсь со сложными задачами и не контролирую ситуацию.", reverse: true },
-      { id: "q27", factor: "C", facet: "Аккуратность", text: "Я люблю порядок, составляю списки дел и следую утверждённым правилам и распорядку.", reverse: false },
-      { id: "q28", factor: "C", facet: "Аккуратность", text: "Строгие правила, графики и инструкции кажутся мне слишком ограничивающими мою волю.", reverse: true },
-      { id: "q29", factor: "C", facet: "Стремление к цели", text: "Я прилагаю огромные усилия, чтобы достичь выдающихся результатов и поставленных целей.", reverse: false },
-      { id: "q30", factor: "C", facet: "Стремление к цели", text: "Я обычно довольствуюсь минимальными затратами труда, лишь бы закрыть задачу.", reverse: true },
-      { id: "q31", factor: "C", facet: "Самодисциплина", text: "Я умею преодолеть нежелание и упорно выполнять даже трудную или скучную работу до завершения.", reverse: false },
-      { id: "q32", factor: "C", facet: "Самодисциплина", text: "Я часто откладываю выполнение задач и не довожу начатые дела до конца.", reverse: true },
-      { id: "q33", factor: "C", facet: "Осторожность", text: "Перед принятием решения я не спешу и обдумываю разные варианты и последствия.", reverse: false },
-      { id: "q34", factor: "C", facet: "Осторожность", text: "Я обычно говорю или делаю первое, что приходит на ум, не просчитывая альтернативы.", reverse: true },
-
-      // N
-      { id: "q35", factor: "N", facet: "Тревога", text: "Я часто чувствую напряжение, нервозность и тревогу, будто должно случиться что-то плохое.", reverse: false },
-      { id: "q36", factor: "N", facet: "Тревога", text: "Обычно я спокоен(на) и не испытываю сильного страха или тревоги перед новыми ситуациями.", reverse: true },
-      { id: "q37", factor: "N", facet: "Гнев", text: "Я легко раздражаюсь и злюсь, если что-то идёт не по моему плану или кажется несправедливым.", reverse: false },
-      { id: "q38", factor: "N", facet: "Гнев", text: "Меня очень трудно вывести из равновесия и заставить разгневаться.", reverse: true },
-      { id: "q39", factor: "N", facet: "Депрессивность", text: "Я нередко испытываю печаль, уныние, разочарование и нехватку энергии для старта.", reverse: false },
-      { id: "q40", factor: "N", facet: "Депрессивность", text: "Я редко погружаюсь в подавленное настроение и чувство безнадёжности.", reverse: true },
-      { id: "q41", factor: "N", facet: "Самосознание", text: "Я очень чувствителен(на) к мнению окружающих, легко смущаюсь и боюсь насмешек.", reverse: false },
-      { id: "q42", factor: "N", facet: "Самосознание", text: "Я не нервничаю в компании и не думаю, что все вокруг оценивают каждый мой шаг.", reverse: true },
-      { id: "q43", factor: "N", facet: "Несдержанность", text: "Мне трудно сопротивляться сильным сиюминутным желаниям в ущерб долгосрочным целям.", reverse: false },
-      { id: "q44", factor: "N", facet: "Несдержанность", text: "Я легко контролирую свои импульсы и не поддаюсь соблазнам.", reverse: true },
-      { id: "q45", factor: "N", facet: "Уязвимость", text: "Под давлением или в стрессовой ситуации я чувствую панику, замешательство и беспомощность.", reverse: false },
-      { id: "q46", factor: "N", facet: "Уязвимость", text: "В условиях стресса и давления я остаюсь уравновешенным(ой) и здравомыслящим(ей).", reverse: true },
-
-      // O
-      { id: "q47", factor: "O", facet: "Воображение", text: "У меня богатое воображение, и я люблю придумывать интересные, нестандартные идеи и образы.", reverse: false },
-      { id: "q48", factor: "O", facet: "Воображение", text: "Я ориентируюсь прежде всего на конкретные факты, а фантазирование считаю лишним.", reverse: true },
-      { id: "q49", factor: "O", facet: "Артистичность", text: "Я глубоко ценю красоту в искусстве, музыке или природе и легко ими увлекаюсь.", reverse: false },
-      { id: "q50", factor: "O", facet: "Артистичность", text: "Искусство, поэзия и эстетика вызывают у меня мало интереса.", reverse: true },
-      { id: "q51", factor: "O", facet: "Эмоциональность", text: "Я хорошо понимаю свои глубокие чувства и умею опираться на них.", reverse: false },
-      { id: "q52", factor: "O", facet: "Эмоциональность", text: "Я редко анализирую свои эмоции и не склонен(на) выражать переживания открыто.", reverse: true },
-      { id: "q53", factor: "O", facet: "Авантюризм", text: "Я люблю новизну, перемены и готов(а) менять привычные маршруты ради нового опыта.", reverse: false },
-      { id: "q54", factor: "O", facet: "Авантюризм", text: "Я чувствую дискомфорт от перемен и предпочитаю хорошо знакомый, стабильный распорядок.", reverse: true },
-      { id: "q55", factor: "O", facet: "Интеллект", text: "Мне нравится играть с идеями, решать головоломки и обсуждать сложные абстрактные вопросы.", reverse: false },
-      { id: "q56", factor: "O", facet: "Интеллект", text: "Отвлечённые теоретические рассуждения кажутся мне пустой тратой времени.", reverse: true },
-      { id: "q57", factor: "O", facet: "Либерализм", text: "Я готов(а) ставить под сомнение привычные традиции, обычаи и авторитеты.", reverse: false },
-      { id: "q58", factor: "O", facet: "Либерализм", text: "Я считаю, что надёжнее и правильнее следовать проверенным традициям и общепринятым правилам.", reverse: true }
-    ];
-
-    const LIKERT_OPTIONS = [
-      { val: 1, label: "Совершенно не согласен" },
-      { val: 2, label: "Скорее не согласен" },
-      { val: 3, label: "Нейтрально" },
-      { val: 4, label: "Скорее согласен" },
-      { val: 5, label: "Полностью согласен" }
-    ];
-
-    // State
-    let activeQuestions = [];
-    let answers = {};
-    let currentPage = 0;
-    const PAGE_SIZE = 10;
-
-    // Mode card styling
-    document.querySelectorAll('input[name="testMode"]').forEach(radio => {
-      radio.addEventListener("change", () => {
-        document.getElementById("mode-full-box").classList.toggle("active", radio.value === "full" && radio.checked);
-        document.getElementById("mode-express-box").classList.toggle("active", radio.value === "express" && radio.checked);
-      });
-    });
-
-    // Build interleaved question list so factors alternate cleanly
-    function buildQuestions(mode) {
-      const pool = mode === "express"
-        ? QUESTIONS_RAW.filter((_, idx) => idx % 2 === 0)
-        : [...QUESTIONS_RAW];
-
-      const groups = { E: [], A: [], C: [], N: [], O: [] };
-      pool.forEach(q => groups[q.factor].push(q));
-
-      const ordered = [];
-      const keys = ["E", "A", "C", "N", "O"];
-      let added = true;
-      while (added) {
-        added = false;
-        for (const k of keys) {
-          if (groups[k].length) {
-            ordered.push(groups[k].shift());
-            added = true;
-          }
-        }
-      }
-      return ordered;
-    }
-
-    function startTest() {
-      const mode = document.querySelector('input[name="testMode"]:checked').value;
-      activeQuestions = buildQuestions(mode);
-      answers = {};
-      currentPage = 0;
-
-      document.getElementById("screen-start").classList.add("hidden");
-      document.getElementById("screen-results").classList.add("hidden");
-      document.getElementById("screen-test").classList.remove("hidden");
-      renderPage();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function renderPage() {
-      const container = document.getElementById("questions-container");
-      const totalPages = Math.ceil(activeQuestions.length / PAGE_SIZE);
-      const start = currentPage * PAGE_SIZE;
-      const slice = activeQuestions.slice(start, start + PAGE_SIZE);
-
-      document.getElementById("test-error").classList.add("hidden");
-      document.getElementById("page-text").textContent = `Страница ${currentPage + 1} из ${totalPages}`;
-      updateProgress();
-
-      container.innerHTML = slice.map((q, idx) => {
-        const globalNum = start + idx + 1;
-        const saved = answers[q.id];
-        return `
-          <div class="question-card" id="card-${q.id}">
-            <div class="q-title"><span class="q-num">${globalNum}.</span> ${q.text}</div>
-            <div class="likert">
-              ${LIKERT_OPTIONS.map(opt => `
-                <label>
-                  <input type="radio" name="ans-${q.id}" value="${opt.val}" ${saved === opt.val ? "checked" : ""}
-                    onchange="selectAnswer('${q.id}', ${opt.val})" />
-                  <span>${opt.label}</span>
-                </label>
-              `).join("")}
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      document.getElementById("btn-prev").disabled = currentPage === 0;
-      const isLast = currentPage === totalPages - 1;
-      document.getElementById("btn-next").classList.toggle("hidden", isLast);
-      document.getElementById("btn-finish").classList.toggle("hidden", !isLast);
-    }
-
-    function selectAnswer(qId, val) {
-      answers[qId] = val;
-      const card = document.getElementById(`card-${qId}`);
-      if (card) card.classList.remove("unanswered-highlight");
-      updateProgress();
-    }
-
-    function updateProgress() {
-      const answeredCount = Object.keys(answers).length;
-      const total = activeQuestions.length;
-      const pct = Math.round((answeredCount / total) * 100);
-      document.getElementById("progress-text").textContent = `Отвечено: ${answeredCount} из ${total} (${pct}%)`;
-      document.getElementById("progress-fill").style.width = `${pct}%`;
-    }
-
-    function validateCurrentPage() {
-      const start = currentPage * PAGE_SIZE;
-      const slice = activeQuestions.slice(start, start + PAGE_SIZE);
-      let firstMissing = null;
-
-      slice.forEach(q => {
-        const card = document.getElementById(`card-${q.id}`);
-        if (!answers[q.id]) {
-          card.classList.add("unanswered-highlight");
-          if (!firstMissing) firstMissing = card;
-        } else {
-          card.classList.remove("unanswered-highlight");
-        }
-      });
-
-      if (firstMissing) {
-        const err = document.getElementById("test-error");
-        err.textContent = "Пожалуйста, ответьте на все вопросы текущей страницы перед переходом дальше.";
-        err.classList.remove("hidden");
-        firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
-        return false;
-      }
-      return true;
-    }
-
-    function nextPage() {
-      if (!validateCurrentPage()) return;
-      currentPage++;
-      renderPage();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function prevPage() {
-      if (currentPage > 0) {
-        currentPage--;
-        renderPage();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    }
-
-    function fillCurrentPageRandom() {
-      const start = currentPage * PAGE_SIZE;
-      const slice = activeQuestions.slice(start, start + PAGE_SIZE);
-      slice.forEach(q => {
-        answers[q.id] = Math.floor(Math.random() * 5) + 1;
-      });
-      renderPage();
-    }
-
-    function runDemoProfile() {
-      const nameInput = document.getElementById("userName");
-      const groupInput = document.getElementById("userGroup");
-      if (!nameInput.value.trim()) nameInput.value = "Демо-профиль (Ученик)";
-      if (!groupInput.value.trim()) groupInput.value = "9 «А» класс";
-
-      activeQuestions = buildQuestions("full");
-      answers = {};
-      // Simulate realistic varied student profile (High O & E, Mid A, Low C, High-Mid N)
-      const targetBias = { E: 4.1, A: 3.1, C: 2.1, N: 3.7, O: 4.4 };
-      activeQuestions.forEach(q => {
-        const base = targetBias[q.factor] + (Math.random() * 1.4 - 0.7);
-        const clamped = Math.max(1, Math.min(5, Math.round(base)));
-        answers[q.id] = q.reverse ? (6 - clamped) : clamped;
-      });
-      generateResults();
-    }
-
-    function finishTest() {
-      if (!validateCurrentPage()) return;
-      generateResults();
-    }
-
-    function resetToStart() {
-      document.getElementById("screen-results").classList.add("hidden");
-      document.getElementById("screen-test").classList.add("hidden");
-      document.getElementById("screen-start").classList.remove("hidden");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    // =========================================================
-    // 2. SCORING & LEVEL CLASSIFICATION
-    // =========================================================
-    function getLevel(avg) {
-      if (avg < 2.6) return { key: "low", label: "Низкий", badgeClass: "badge-low" };
-      if (avg <= 3.4) return { key: "mid", label: "Средний", badgeClass: "badge-mid" };
-      return { key: "high", label: "Высокий", badgeClass: "badge-high" };
-    }
-
-    function calculateProfile() {
-      const factorResults = FACTORS.map(f => {
-        const fQuestions = activeQuestions.filter(q => q.factor === f.id);
-        const facetMap = {};
-
-        fQuestions.forEach(q => {
-          const raw = answers[q.id] || 3;
-          const score = q.reverse ? (6 - raw) : raw;
-          if (!facetMap[q.facet]) facetMap[q.facet] = [];
-          facetMap[q.facet].push(score);
-        });
-
-        const facets = Object.entries(facetMap).map(([name, scores]) => {
-          const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-          return { name, avg, pct: Math.round(((avg - 1) / 4) * 100), level: getLevel(avg) };
-        });
-
-        const avg = facets.reduce((sum, fc) => sum + fc.avg, 0) / facets.length;
-        const pct = Math.round(((avg - 1) / 4) * 100);
-        const level = getLevel(avg);
-
-        return { ...f, avg, pct, level, facets };
-      });
-
-      return factorResults;
-    }
-
-    // =========================================================
-    // 3. GENERATE ALL 5 TABLES + PRESENTATION
-    // =========================================================
-    function generateResults() {
-      const profile = calculateProfile();
-      const map = Object.fromEntries(profile.map(p => [p.id, p]));
-
-      const userName = document.getElementById("userName").value.trim() || "Пользователь";
-      const userGroup = document.getElementById("userGroup").value.trim() || "Не указано";
-      const today = new Date().toLocaleDateString("ru-RU");
-
-      document.getElementById("result-meta-line").textContent = `${userName} • ${userGroup} • ${today}`;
-      document.getElementById("chart-meta").textContent = `Профиль: ${userName} (${userGroup}), дата диагностики: ${today}`;
-
-      // Visual Bars
-      document.getElementById("factor-bars").innerHTML = profile.map(f => `
-        <div class="bar-row">
-          <div><strong>${f.name}</strong> <span style="color:var(--muted); font-size:0.85rem;">(${f.avg.toFixed(2)} / 5)</span></div>
-          <div class="bar-track">
-            <div class="bar-fill" style="width:${Math.max(5, f.pct)}%; background:${f.color};"></div>
-          </div>
-          <div><span class="badge ${f.level.badgeClass}">${f.level.label} (${f.pct}%)</span></div>
-        </div>
-      `).join("");
-
-      // TABLE 1: Сводные результаты по модели Big Five
-      document.getElementById("table-1-body").innerHTML = profile.map(f => {
-        const manifest = f.level.key === "high" ? f.highManifest : (f.level.key === "low" ? f.lowManifest : f.midManifest);
-        const risk = f.level.key === "high" ? f.highRisk : (f.level.key === "low" ? f.lowRisk : f.midRisk);
-        const sortedFacets = [...f.facets].sort((a, b) => b.avg - a.avg);
-
-        const facetsHtml = `<ul class="facet-list">${sortedFacets.map(fc => {
-          const mark = fc.level.key === "high" ? "▲" : (fc.level.key === "low" ? "▼" : "•");
-          return `<li><strong>${fc.name}:</strong> ${fc.avg.toFixed(1)} (${fc.level.label}) ${mark}</li>`;
-        }).join("")}</ul>`;
-
-        return `
-          <tr>
-            <td><strong>${f.name}</strong><br><span style="color:var(--muted); font-size:0.8rem;">${f.en}</span></td>
-            <td><span class="badge ${f.level.badgeClass}">${f.level.label}</span><br><span style="font-size:0.85rem;">${f.avg.toFixed(2)} / 5 (${f.pct}%)</span></td>
-            <td>${facetsHtml}</td>
-            <td>${manifest}</td>
-            <td>${risk}</td>
-          </tr>
-        `;
-      }).join("");
-
-      // TABLE 2: ТОП-3 сильных качества и ТОП-3 зоны риска
-      const { strengths, risks } = deriveTop3(profile);
-      document.getElementById("table-2-body").innerHTML = [0, 1, 2].map(i => `
-        <tr>
-          <td><strong>${i + 1})</strong> <span contenteditable="true">${strengths[i]}</span></td>
-          <td><strong>${i + 1})</strong> <span contenteditable="true">${risks[i]}</span></td>
-        </tr>
-      `).join("");
-
-      // TABLE 3: Гипотезы о влиянии особенностей на учебную деятельность
-      const hypotheses = buildHypotheses(map);
-      document.getElementById("table-3-body").innerHTML = hypotheses.map(h => `
-        <tr>
-          <td><strong>${h.component}</strong></td>
-          <td contenteditable="true">${h.pros}</td>
-          <td contenteditable="true">${h.cons}</td>
-        </tr>
-      `).join("");
-
-      // TABLE 4: Матрица стратегий 5Ф
-      document.getElementById("table-4-body").innerHTML = profile.map(f => {
-        const highActive = f.level.key === "high" ? "cell-active" : "";
-        const lowActive = f.level.key === "low" ? "cell-active" : "";
-        return `
-          <tr>
-            <td>
-              <strong>${f.name}</strong><br>
-              <span class="badge ${f.level.badgeClass}" style="margin-top:4px;">${f.level.label} (${f.pct}%)</span>
-              ${f.level.key === "mid" ? '<div style="font-size:0.78rem; color:var(--muted); margin-top:4px;">Сбалансировано: берите приёмы по ситуации</div>' : ""}
-            </td>
-            <td class="${highActive}">${f.matrixHigh}</td>
-            <td class="${lowActive}">${f.matrixLow}</td>
-          </tr>
-        `;
-      }).join("");
-
-      // TABLE 5: Индивидуальный план сопровождения
-      const planRows = buildIndividualPlan(profile, map);
-      document.getElementById("table-5-body").innerHTML = planRows.map(r => `
-        <tr>
-          <td contenteditable="true">${r.goal}</td>
-          <td contenteditable="true">${r.strategy}</td>
-          <td contenteditable="true">${r.assessment}</td>
-          <td contenteditable="true">${r.format}</td>
-          <td contenteditable="true">${r.owner}</td>
-          <td contenteditable="true">${r.timeline}</td>
-        </tr>
-      `).join("");
-
-      // MINI-PRESENTATION DRAFT
-      document.getElementById("presentation-summary").innerHTML = `
-        <li><strong>Портрет по Big Five (2–3 наблюдения):</strong> ${buildPortraitLine(profile)}</li>
-        <li><strong>Сильные стороны (ТОП-3) — как используем:</strong> ${strengths.join("; ")}. Опираемся на них при распределении ролей и выборе форматов заданий.</li>
-        <li><strong>Зоны риска (ТОП-3) — что делаем:</strong> ${risks.join("; ")}. Применяем выделенные приёмы из Матрицы 5Ф.</li>
-        <li><strong>Индивидуальный план:</strong> главная цель — ${planRows[0].goal.toLowerCase()}; ключевая метрика — ${planRows[0].assessment.toLowerCase()}.</li>
-        <li><strong>Запросы к классу / родителям / учителям:</strong> предсказуемые правила обратной связи, поддержка в выбранной роли, регулярная рефлексия прогресса каждые 2 недели.</li>
-      `;
-
-      document.getElementById("screen-start").classList.add("hidden");
-      document.getElementById("screen-test").classList.add("hidden");
-      document.getElementById("screen-results").classList.remove("hidden");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function deriveTop3(profile) {
-      const allFacets = [];
-      profile.forEach(f => {
-        f.facets.forEach(fc => {
-          // For Neuroticism, low score = emotional stability (strength), high score = emotional reactivity (risk)
-          const strengthScore = f.id === "N" ? (6 - fc.avg) : fc.avg;
-          const riskScore = f.id === "N" ? fc.avg : (6 - fc.avg);
-          allFacets.push({ factor: f.name, factorId: f.id, name: fc.name, avg: fc.avg, strengthScore, riskScore });
-        });
-      });
-
-      const topStrengthFacets = [...allFacets]
-        .sort((a, b) => b.strengthScore - a.strengthScore)
-        .slice(0, 3)
-        .map(item => {
-          if (item.factorId === "N") {
-            return `Эмоциональная устойчивость по шкале «${item.name}» (${item.avg.toFixed(1)} из 5 по нейротизму — спокойствие и самообладание)`;
-          }
-          return `Выраженность аспекта «${item.name}» (${item.factor}, ${item.avg.toFixed(1)} из 5)`;
-        });
-
-      const topRiskFacets = [...allFacets]
-        .sort((a, b) => b.riskScore - a.riskScore)
-        .slice(0, 3)
-        .map(item => {
-          if (item.factorId === "N") {
-            return `Повышенная чувствительность по шкале «${item.name}» (${item.avg.toFixed(1)} из 5 — риск эмоционального напряжения)`;
-          }
-          if (item.avg < 2.6) {
-            return `Низкий уровень аспекта «${item.name}» (${item.factor}, ${item.avg.toFixed(1)} из 5 — зона развития)`;
-          }
-          return `Относительно невысокий показатель по шкале «${item.name}» (${item.factor}, ${item.avg.toFixed(1)} из 5)`;
-        });
-
-      return { strengths: topStrengthFacets, risks: topRiskFacets };
-    }
-
-    function buildHypotheses(map) {
-      const E = map.E.level.key, A = map.A.level.key, C = map.C.level.key, N = map.N.level.key, O = map.O.level.key;
-
-      return [
-        {
-          component: "Атмосфера и благополучие",
-          pros: [
-            E === "high" ? "Привносит энергию, оптимизм и оживляет атмосферу в классе." : (E === "low" ? "Создаёт спокойный, уравновешенный фон, не провоцирует лишнюю суету." : "Поддерживает комфортный баланс активности и спокойствия."),
-            A === "high" ? "Смягчает напряжённость, заботится о психологическом комфорте сверстников." : "",
-            N === "low" ? "Помогает группе сохранять хладнокровие в напряжённые моменты." : ""
-          ].filter(Boolean).join(" "),
-          cons: [
-            N === "high" ? "Высокая чувствительность к критике, стрессу и оценочным ситуациям; риск эмоционального выгорания." : "",
-            E === "low" ? "Шумная, перегруженная стимулами обстановка быстро истощает ресурсы." : "",
-            N === "low" && A === "low" ? "Может недооценивать эмоциональную уязвимость более чувствительных одноклассников." : ""
-          ].filter(Boolean).join(" ") || "Существенных угроз психологическому благополучию не выявлено при соблюдении базовых правил поддержки."
-        },
-        {
-          component: "Коммуникация и взаимодействие",
-          pros: [
-            E === "high" ? "Легко вступает в диалог, выступает спикером и инициирует обсуждения." : "Внимательно слушает, отвечает обдуманно, предпочитает содержательный диалог в малых группах.",
-            A === "high" ? "Открыто сотрудничает, умеет сглаживать острые углы и слышать других." : "Даёт честную, прямую и аргументированную обратную связь без лести."
-          ].join(" "),
-          cons: [
-            E === "high" ? "Риск перебивать более тихих участников и доминировать в обсуждении." : "Риск оставаться незамеченным на фронтальных опросах при нехватке времени на подготовку.",
-            A === "low" ? "Прямолинейность и скепсис могут восприниматься одноклассниками как резкость." : (A === "high" ? "Трудно сказать «нет» и защитить свою позицию при давлении." : "")
-          ].filter(Boolean).join(" ")
-        },
-        {
-          component: "Проектная / групповая работа",
-          pros: [
-            O === "high" ? "Генерирует нестандартные идеи, видит межпредметные связи и творческие форматы продукта." : "Надёжно реализует проверенные практические шаги и конкретные задачи.",
-            C === "high" ? "Структурирует этапы проекта, контролирует качество и сроки." : "Гибко реагирует на неожиданные изменения в проекте."
-          ].join(" "),
-          cons: [
-            C === "low" ? "Риск срыва сроков и потери фокуса на многоэтапных задачах без чек-листов." : (C === "high" ? "Склонность к перфекционизму и переделкам в ущерб срокам." : ""),
-            O === "high" ? "Скука при оформлении рутинных отчётов и работе по жёсткому шаблону." : (O === "low" ? "Трудности на старте открытых творческих проектов без образца." : "")
-          ].filter(Boolean).join(" ")
-        },
-        {
-          component: "Дисциплина и саморегуляция",
-          pros: [
-            C === "high" ? "Высокая самодисциплина, аккуратность, соблюдение правил и обдуманность действий." : "Высокая спонтанность в игровых и быстрых ситуациях; не зацикливается на формальностях.",
-            N === "low" ? "Устойчивость к срывам и импульсивным вспышкам раздражения." : ""
-          ].filter(Boolean).join(" "),
-          cons: [
-            C === "low" ? "Импульсивность, откладывание сложных дел, забывание деталей инструкции." : "",
-            N === "high" ? "Под давлением времени возможны паника, раздражение или ступор при старте работы." : "",
-            O === "high" ? "Склонность оспаривать формальные правила, если их смысл не объяснён." : ""
-          ].filter(Boolean).join(" ") || "Саморегуляция в норме; важно поддерживать понятные критерии и посильный уровень сложности."
-        }
-      ];
-    }
-
-    function buildIndividualPlan(profile, map) {
-      const rows = [];
-
-      // 1. Primary growth/risk area (lowest non-N factor or highest N)
-      const candidates = profile.map(f => ({
-        f,
-        priority: f.id === "N" ? f.avg : (6 - f.avg)
-      })).sort((a, b) => b.priority - a.priority);
-
-      const mainRisk = candidates[0].f;
-      const secondRisk = candidates[1].f;
-      const mainStrength = [...profile].sort((a, b) => {
-        const sA = a.id === "N" ? (6 - a.avg) : a.avg;
-        const sB = b.id === "N" ? (6 - b.avg) : b.avg;
-        return sB - sA;
-      })[0];
-
-      // Row 1: Support main risk
-      rows.push({
-        goal: `Снизить риски по фактору «${mainRisk.name}» и развить адаптивные навыки`,
-        strategy: mainRisk.id === "N" ? mainRisk.matrixHigh : (mainRisk.level.key === "high" ? mainRisk.matrixHigh : mainRisk.matrixLow),
-        assessment: "Мини-опросники саморегуляции и учебной мотивации (до/после); наблюдательные листы",
-        format: "Индивидуальная дорожная карта («learning contract»); короткие мастер-классы навыков",
-        owner: "Учитель / классный руководитель, ученик",
-        timeline: "Спринт 2 недели (промежуточная проверка через 7 дней)"
-      });
-
-      // Row 2: Leverage main strength
-      rows.push({
-        goal: `Реализовать сильную сторону («${mainStrength.name}») в учебной и командной работе`,
-        strategy: mainStrength.id === "N" ? mainStrength.matrixLow : mainStrength.matrixHigh,
-        assessment: "Рубрики к продуктам проектной деятельности (роль, вклад, качество, сроки); взаимооценка «три звезды и пожелание»",
-        format: "Парная и групповая работа с распределёнными ролями; проектные спринты 1–2 недели",
-        owner: "Предметник, ученик, команда проекта",
-        timeline: "В течение ближайшего проектного модуля (2–4 недели)"
-      });
-
-      // Row 3: Secondary balance
-      rows.push({
-        goal: `Укрепить саморегуляцию и взаимодействие (акцент: «${secondRisk.name}»)`,
-        strategy: secondRisk.id === "N"
-          ? (secondRisk.level.key === "low" ? secondRisk.matrixLow : secondRisk.matrixHigh)
-          : (secondRisk.level.key === "high" ? secondRisk.matrixHigh : secondRisk.matrixLow),
-        assessment: "Портфолио-артефакты: планы, черновики, рефлексивные заметки; короткие чек-листы самооценки",
-        format: "Проектные спринты с чёткими критериями и ретроспективой; парная работа",
-        owner: "Ученик, учитель, при необходимости — родители",
-        timeline: "Еженедельная рефлексия в течение четверти"
-      });
-
-      return rows;
-    }
-
-    function buildPortraitLine(profile) {
-      const sorted = [...profile].sort((a, b) => Math.abs(b.avg - 3) - Math.abs(a.avg - 3));
-      const p1 = sorted[0], p2 = sorted[1];
-      return `Наиболее ярко выражены черты по факторам «${p1.name}» (${p1.level.label.toLowerCase()}, ${p1.pct}%) и «${p2.name}» (${p2.level.label.toLowerCase()}, ${p2.pct}%). Остальные показатели формируют сбалансированную основу для обучения.`;
-    }
-
-    // =========================================================
-    // 4. EXPORT TO WORD (.DOC)
-    // =========================================================
-    function exportToWord() {
-      const reportEl = document.getElementById("exportable-report").cloneNode(true);
-      reportEl.querySelectorAll(".no-print").forEach(el => el.remove());
-
-      const userName = (document.getElementById("userName").value.trim() || "Профиль").replace(/[^\p{L}\p{N}_-]+/gu, "_");
-      const html = `
-        <html xmlns:o="urn:schemas-microsoft-com:office:office"
-              xmlns:w="urn:schemas-microsoft-com:office:word"
-              xmlns="http://www.w3.org/TR/REC-html40">
-        <head>
-          <meta charset="utf-8" />
-          <title>Профиль Big Five</title>
-          <style>
-            body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #1e293b; }
-            h2 { color: #1e3a8a; font-size: 14pt; margin-top: 18pt; margin-bottom: 6pt; }
-            table { border-collapse: collapse; width: 100%; margin-bottom: 14pt; }
-            th, td { border: 1px solid #94a3b8; padding: 6pt 8pt; vertical-align: top; text-align: left; font-size: 10pt; }
-            th { background-color: #e2e8f0; font-weight: bold; }
-            .badge { font-weight: bold; }
-            .cell-active { background-color: #dbeafe; }
-            ul { margin: 0; padding-left: 14pt; }
-            .ethical-box { border-left: 3pt solid #2563eb; padding: 8pt; background: #f8fafc; margin-top: 12pt; }
-          </style>
-        </head>
-        <body>
-          <h1>Результаты диагностики Big Five и план сопровождения (Задание 7.4)</h1>
-          ${reportEl.innerHTML}
-        </body>
-        </html>
-      `;
-
-      const blob = new Blob(["\ufeff", html], { type: "application/msword" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `BigFive_${userName}.doc`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
 </body>
 </html>
