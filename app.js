@@ -894,7 +894,8 @@ function renderDashboard() {
     ? `<span class="badge badge-psy">психолог · все классы</span>`
     : `<span class="badge badge-teach">педагог · личные классы</span>`;
 
-  document.getElementById("dash-welcome").textContent = `${t.full_name} (@${t.username})`;
+  document.getElementById("dash-welcome").innerHTML =
+    `${escapeHtml(t.full_name)} <span class="dash-handle">@${escapeHtml(t.username)}</span>`;
   document.getElementById("dash-role-line").innerHTML = badge;
   document.getElementById("classes-scope-hint").textContent = isPsy
     ? "Расширенный доступ: отображаются все классы и группы образовательной организации."

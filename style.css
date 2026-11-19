@@ -749,11 +749,14 @@ button:disabled {
 }
 
 .badge {
-  display: inline-block;
-  padding: 2px 9px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  padding: 3px 9px;
   border-radius: 9999px;
   font-size: 0.7rem;
   font-weight: 600;
+  line-height: 1.25;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -911,6 +914,24 @@ td[contenteditable="true"]:focus {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+  margin-bottom: 4px;
+}
+
+.dash-title-row .editorial-title-sm {
+  margin-bottom: 0;
+  line-height: 1.15;
+}
+
+.dash-handle {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+#dash-role-line {
+  display: inline-flex;
+  align-items: center;
 }
 
 .class-pills {
